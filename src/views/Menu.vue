@@ -4,10 +4,10 @@
         <h1>Welcome to Taru's Portfolio</h1>
     </div>
     <div class="menu-area">
-        <h1>Who am I</h1>
-        <h1>Skill</h1>
-        <h1>Works</h1>
-        <h1>Accounts</h1>
+        <h1><router-link to="/whoami">Who am I</router-link></h1>
+        <h1><router-link to="/skills">Skills</router-link></h1>
+        <h1><router-link to="/works">Works</router-link></h1>
+        <h1><router-link to="/accounts">Accounts</router-link></h1>
     </div>
   </div>
 </template>
