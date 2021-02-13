@@ -1,30 +1,55 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div id="left-side">
+    <img id="left-image" src="./assets/background.gif">
   </div>
-  <router-view/>
+  <div id="right-side">
+    <!-- <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
+    </div> -->
+    <router-view/>
+    <h1>right-side</h1>
+  </div>
+
 </template>
 
 <style>
+* {
+	margin:0; padding:0; 		/*全要素のマージン・パディングをリセット*/
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  height: 100%;
+  margin: 0;
 }
 
-#nav {
-  padding: 30px;
+#left-side {
+  width: 30%;
+  height: 100%;
+  float: left;
+  overflow: hidden;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+#right-side {
+  width: 70%;
+  height: 100%;
+  float: right;
+  margin: 0;
+  background-color: black;
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+#left-image {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 </style>
