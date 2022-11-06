@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/taruscript
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://taruscript.github.io
+  * I am taruscript (https://keybase.io/taruscript) on keybase.
+  * I have a public key ASDA6kHnfVQdqD7om8qX799zyktRsRD4qNEgKz_PBfDGiwo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0120c0ea41e77d541da83ee89bca97efdf73ca4b51b110f8a8d1202b3fcf05f0c68b0a",
+      "host": "keybase.io",
+      "kid": "0120c0ea41e77d541da83ee89bca97efdf73ca4b51b110f8a8d1202b3fcf05f0c68b0a",
+      "uid": "6103a7dff2af12f982a7b6fb2f5e1c19",
+      "username": "taruscript"
+    },
+    "merkle_root": {
+      "ctime": 1667723553,
+      "hash": "c0b566bec9f880776fdf89849df6d4d4b8d4c58b24ac4d0532fd5336f210abb30c0e48318fe032eab4dd64e0b0e62245516d3f647908d7f97e0267c48445e068",
+      "hash_meta": "54b932ee38c166f53447d90707c04d1f3e83843bb9511a9511deb2f1c152daa1",
+      "seqno": 23497340
+    },
+    "service": {
+      "entropy": "KHlve/84Ge/F1kRdsYkYVG2D",
+      "hostname": "taruscript.github.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "6.0.2"
+  },
+  "ctime": 1667723591,
+  "expire_in": 504576000,
+  "prev": "4d652e59a20cc9369666853df80c9e3bf2c1ca891ceab83b3902d91c50c6747c",
+  "seqno": 12,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgwOpB531UHag+6JvKl+/fc8pLUbEQ+KjRICs/zwXwxosKp3BheWxvYWTESpcCDMQgTWUuWaIMyTaWZoU9+AyeO/LByokc6rg7OQLZHFDGdHzEIOv0BOwd+hZL6SVzeGE0rH2tVjOVRiY3iHC+R/RBXY8OAgHCo3NpZ8RAXhTqRXgw32FtdD2l1vLJIFhmLwWWfwyUWSg6v8zd70TYcaSFKgqw+QowGd0bsfNEprkaLJNb9m+Vlwf/uFJED6hzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIK6mMiI+jtrYkcWTCv97uhYDAd5coypOjE7AX/wzu4tMo3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/taruscript
+
+==================================================================
