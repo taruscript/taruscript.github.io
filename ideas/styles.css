@@ -83,6 +83,19 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
   inset: 0; width: 100%; height: 100%;
   mask-image: linear-gradient(90deg, transparent 20%, #000 57%);
 }
+.incident-key {
+  position: absolute; bottom: 8px; left: 78%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 11px; white-space: nowrap;
+  color: #a8b9ca; font-size: 10px; letter-spacing: .025em;
+}
+.incident-key span { display: inline-flex; align-items: center; gap: 5px; }
+.incident-key i { display: inline-block; width: 7px; height: 7px; }
+.incident-in { background: #e6aa69; clip-path: polygon(0 32%,65% 32%,65% 0,100% 50%,65% 100%,65% 68%,0 68%); }
+.incident-block { border: 1px solid #91ebcd; border-radius: 50%; }
+.incident-hit { border: 1px solid #ff6774; transform: rotate(45deg); }
+@media(max-width: 690px) {
+  .incident-key { position: static; transform: none; margin-top: 15px; }
+}
 .eyebrow { color: #76cabe; font-size: 11px; letter-spacing: .16em; font-weight: 800; text-transform: uppercase; display: flex; align-items: center; gap: 11px; }
 .eyebrow::before { content: ""; display: block; width: 23px; height: 1px; background: currentColor; }
 h1 { font-size: clamp(33px, 4.6vw, 62px); line-height: 1.23; letter-spacing: -.052em; margin: 20px 0 20px; max-width: 960px; font-weight: 850; }

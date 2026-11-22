@@ -92,13 +92,18 @@
     ctx.fill();
   }
 
-  // Incoming pulses terminate at the outer sensor ring.
+  const spokeAngle = lane => (lane * 45 - 17) * rad;
+  const spokeEnd = lane => 2.22 + (lane % 3) * .22;
+  function orientGlobe(q, time) {
+    return q.setFromAxisAngle(up, -91 * rad + time * .045).premultiply(pitch).premultiply(tilt);
+  }
+
   function perimeter(time) {
     for (let i = 0; i < 8; i++) {
       if (uplinks.includes(i)) continue;
       ctx.save();
-      ctx.rotate((i * 45 - 17) * rad);
-      const end = 2.22 + (i % 3) * .22;
+      ctx.rotate(spokeAngle(i));
+      const end = spokeEnd(i);
       ctx.beginPath();
       ctx.moveTo(1.19, 0);
       ctx.lineTo(1.43, 0);
@@ -108,16 +113,6 @@
       ctx.stroke();
       ctx.fillStyle = 'rgba(129,221,208,.48)';
       ctx.fillRect(end, -.15, .023, .023);
-      if (i === 0 || i === 5) {
-        const phase = (time * .16 + i * .47) % 1;
-        const x = Math.max(1.19, end - (end - 1.19) * phase / .68);
-        const y = -Math.max(0, Math.min(.14, x - 1.43));
-        if (phase < .68) spot(x, y, .021, '#ffcb88');
-        else {
-          const ripple = (phase - .68) / .32;
-          ring(1.19, 0, .025 + ripple * .12, `rgba(132,255,215,${1 - ripple})`);
-        }
-      }
       ctx.restore();
     }
     ring(0, 0, 1.19, 'rgba(108,209,196,.29)');
@@ -136,8 +131,89 @@
     spot(1.19 * Math.cos(sweep + .38), 1.19 * Math.sin(sweep + .38), .017, '#c9fff0');
   }
 
+  // A repeating illustrative wave. Shorter launch intervals create pressure without flashing.
+  const events = [
+    {at: 0, lane: 5}, {at: 2.8, lane: 0}, {at: 4.8, lane: 6},
+    {at: 6.2, lane: 2}, {at: 7.2, lane: 5, breach: true}, {at: 7.9, lane: 7},
+    {at: 8.5, lane: 0}, {at: 9, lane: 2}, {at: 9.5, lane: 6},
+    {at: 12.8, lane: 5}, {at: 15.6, lane: 7}
+  ];
+  const impactRotation = new Quaternion();
+
+  function incoming(lane, progress) {
+    const angle = spokeAngle(lane);
+    const x = spokeEnd(lane) + (1.19 - spokeEnd(lane)) * progress;
+    const y = -Math.max(0, Math.min(.14, x - 1.43));
+    return {x: x * Math.cos(angle) - y * Math.sin(angle), y: x * Math.sin(angle) + y * Math.cos(angle)};
+  }
+
+  function trace(a, b, color) {
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.strokeStyle = color;
+    ctx.stroke();
+  }
+
+  function breachedNode(port, age, time) {
+    // Select at impact time so the endpoint stays attached to the same rotating hub.
+    orientGlobe(impactRotation, time - age);
+    let nearest, distance = Infinity;
+    for (const hub of hubs) {
+      const p = projected.copy(hub).applyQuaternion(impactRotation);
+      if (p.z < .25) continue;
+      const d = Math.hypot(p.x - port.x, -p.y - port.y);
+      if (d < distance) { nearest = hub; distance = d; }
+    }
+    if (!nearest) return;
+    const p = projected.copy(nearest).applyQuaternion(rotation);
+    const travel = Math.min(1, age / .9);
+    const x = port.x + (p.x - port.x) * travel;
+    const y = port.y + (-p.y - port.y) * travel;
+    ctx.globalAlpha = Math.min(1, (3 - age) / .9);
+    trace(port, {x, y}, 'rgba(255,71,85,.64)');
+    spot(x, y, .023, '#ff495b');
+    if (travel === 1) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(Math.PI / 4);
+      ctx.strokeStyle = '#ff6774';
+      ctx.strokeRect(-.045, -.045, .09, .09);
+      ctx.restore();
+    }
+  }
+
+  function drawIncidents(time) {
+    const cycle = 18;
+    const approach = 1.8;
+    ctx.save();
+    ctx.lineWidth = 1.5 / radius;
+    for (const event of events) {
+      const age = ((time + 1.3 - event.at) % cycle + cycle) % cycle;
+      const afterImpact = age - approach;
+      if (afterImpact >= (event.breach ? 3 : 1)) continue;
+      ctx.globalAlpha = 1;
+      const progress = Math.min(1, age / approach);
+      const head = incoming(event.lane, progress);
+      if (afterImpact < 0) {
+        const tail = incoming(event.lane, Math.max(0, progress - .13));
+        ctx.globalAlpha = Math.min(1, age / .24);
+        trace(tail, head, '#e6a35e');
+        spot(head.x, head.y, .019, '#ffd494');
+      } else if (event.breach) {
+        breachedNode(head, afterImpact, time);
+      } else {
+        ctx.globalAlpha = 1 - afterImpact;
+        const angle = spokeAngle(event.lane);
+        ring(0, 0, 1.19, '#a4ffda', angle - .105, angle + .105);
+        ring(head.x, head.y, .025 + .095 * afterImpact, '#91ebcd');
+      }
+    }
+    ctx.restore();
+  }
+
   let width, height, dpr, radius, centerX, centerY;
-  let elapsed = 0;
+  let elapsed = reduced.matches ? 9 : 0;
   function draw() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
@@ -158,7 +234,7 @@
     sphere.addColorStop(.94, '#0a1e30');
     sphere.addColorStop(1, '#20505a');
     spot(0, 0, 1, sphere);
-    rotation.setFromAxisAngle(up, -91 * rad + elapsed * .045).premultiply(pitch).premultiply(tilt);
+    orientGlobe(rotation, elapsed);
     for (const line of grid) path(line, 'rgba(104,191,192,.17)');
     ctx.fillStyle = '#68cbb4';
     for (const point of dots) {
@@ -182,6 +258,7 @@
       ring(p.x, -p.y, .035, 'rgba(170,255,224,.68)');
       spot(p.x, -p.y, .018, '#d2ffe9');
     }
+    drawIncidents(elapsed);
   }
 
   // The mesh uses page coordinates so its three uplinks stay on the globe as the page scrolls.
@@ -256,7 +333,7 @@
       return trail.map(coord);
     }
     for (const i of uplinks) {
-      const angle = (i * 45 - 17) * rad;
+      const angle = spokeAngle(i);
       const cos = Math.cos(angle), sin = Math.sin(angle);
       const port = (x, y = 0) => ({x: cx + radius * (x * cos - y * sin), y: cy + radius * (x * sin + y * cos)});
       const tip = port(1.57, -.14);
