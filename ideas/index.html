@@ -9,7 +9,7 @@
   <meta property="og:title" content="AI時代のトラスト＆セキュリティ｜32のテーマ候補">
   <meta property="og:description" content="技術・制度の両面から、AI時代のセキュリティを考える。4象限×各8テーマ。">
   <title>AI時代のトラスト＆セキュリティ | 32のグループワークテーマ</title>
-  <link rel="stylesheet" href="styles.css?v=7e472e233a">
+  <link rel="stylesheet" href="styles.css?v=28ff637815">
 </head>
 <body>
   <svg class="peer-network" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"></svg>
@@ -48,6 +48,36 @@
         <span><i class="incident-hit" aria-hidden="true"></i>侵入</span>
       </div>
     </section>
+
+    <details id="case-studies" class="container">
+      <summary>公表事例を地球儀で見る <small>被害 2件・防御 2件</small></summary>
+      <p class="case-caption">地球儀の印は対象組織の国を示します。閉じると模擬通信に戻ります。</p>
+      <label class="case-picker" hidden>事例を選択 <select id="case-select"></select></label>
+      <article data-country="日本" data-lon="138" data-lat="36" data-outcome="被害">
+        <small>被害 · 日本 · 2022年10月</small>
+        <h3>大阪急性期・総合医療センター</h3>
+        <p>ランサムウェアで電子カルテが使えなくなり、病院は紙カルテに切り替えました。救急の受け入れ、外来診療、予定手術を制限し、診療機能が全面復旧したのは翌年1月11日でした。</p>
+        <a href="https://www.gh.opho.jp/incident/1.html">病院の調査委員会報告書</a>
+      </article>
+      <article data-country="米国" data-lon="-98" data-lat="38" data-outcome="防御">
+        <small>防御 · 米国 · 2022年7月</small>
+        <h3>Cloudflare</h3>
+        <p>社員3人が偽のログイン画面に認証情報を入力しました。攻撃者はその情報でログインを試みましたが、社員の物理セキュリティキーが必要だったため、社内システムへの侵入を防げました。</p>
+        <a href="https://blog.cloudflare.com/2022-07-sms-phishing-attacks/">Cloudflareのインシデント報告</a>
+      </article>
+      <article data-country="英国" data-lon="-1.6" data-lat="52.5" data-outcome="被害">
+        <small>被害 · 英国 · 2023年10月</small>
+        <h3>大英図書館</h3>
+        <p>ランサムウェア攻撃で、利用者や職員の個人情報を含む約600GBのファイルが持ち出されました。図書館は開館を続けましたが、最初の2か月は調査・研究向けサービスを大幅に制限しました。</p>
+        <a href="https://www.bl.uk/files/v5dwkion/production/99206a2d1e9f07b35712b78f7d75fbb09560c08d.pdf/british-library-cyber-incident-review-8-march-2024.pdf">大英図書館の検証報告書（PDF）</a>
+      </article>
+      <article data-country="エストニア" data-lon="25.5" data-lat="58.6" data-outcome="防御">
+        <small>防御 · エストニア · 2025年10月</small>
+        <h3>行政ポータル eesti.ee</h3>
+        <p>10月4日と5日に、行政ポータルに対して計4回のサービス妨害攻撃がありました。エストニア情報システム庁は、防御対策が機能し、サービスへの影響はなかったと報告しています。</p>
+        <a href="https://www.ria.ee/en/situation-cyberspace-october-2025">エストニア情報システム庁の月次報告</a>
+      </article>
+    </details>
 
     <section class="container" id="matrix" aria-labelledby="matrix-title">
       <div class="section-heading">
@@ -143,6 +173,6 @@
   <script src="topics.js"></script>
   <script src="app.js"></script>
   <script src="vendor/three-math.min.js"></script>
-  <script src="defense-scene.js?v=545d99355c"></script>
+  <script src="defense-scene.js?v=c55760b0c3"></script>
 </body>
 </html>

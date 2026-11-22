@@ -158,6 +158,42 @@
   }
   const sensorRadius = .085;
 
+  const casePanel = document.getElementById('case-studies');
+  const caseSelect = document.getElementById('case-select');
+  const cases = Array.from(casePanel.querySelectorAll('article'), article => {
+    const {country, lon, lat, outcome} = article.dataset;
+    const title = article.querySelector('h3').textContent;
+    caseSelect.add(new Option(outcome + ' · ' + title, String(caseSelect.length)));
+    return {article, country, lon: Number(lon), lat: Number(lat), outcome, point: onGlobe(Number(lon), Number(lat))};
+  });
+  const casePitch = new Quaternion();
+  const east = new Vector3(1, 0, 0);
+  function showCase() {
+    const selected = cases[caseSelect.selectedIndex];
+    for (const entry of cases) entry.article.hidden = entry !== selected;
+    draw();
+  }
+
+  function drawCase(entry) {
+    const p = screen(entry.point);
+    ctx.lineWidth = 1.8 / radius;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    if (entry.outcome === '被害') {
+      ctx.rotate(Math.PI / 4);
+      ctx.strokeStyle = '#ff6774';
+      ctx.strokeRect(-.05, -.05, .1, .1);
+      spot(0, 0, .021, '#ff6774');
+    } else {
+      ring(0, 0, .07, '#91ebcd');
+      spot(0, 0, .021, '#91ebcd');
+    }
+    ctx.restore();
+    ctx.font = (12 / radius) + 'px sans-serif';
+    ctx.fillStyle = '#eff6ff';
+    ctx.fillText(entry.country + ' · ' + entry.outcome, p.x + .1, p.y + .025);
+  }
+
   function screen(point) {
     const p = projected.copy(point).applyQuaternion(rotation);
     return {x: p.x, y: -p.y, z: p.z};
@@ -330,7 +366,13 @@
     sphere.addColorStop(.94, '#0a1e30');
     sphere.addColorStop(1, '#1a435c');
     spot(0, 0, 1, sphere);
-    orientGlobe(elapsed);
+    const selectedCase = casePanel.open ? cases[caseSelect.selectedIndex] : null;
+    if (selectedCase) {
+      casePitch.setFromAxisAngle(east, selectedCase.lat * rad);
+      rotation.setFromAxisAngle(up, -selectedCase.lon * rad).premultiply(casePitch).premultiply(tilt);
+    } else {
+      orientGlobe(elapsed);
+    }
     for (const line of grid) path(line, 'rgba(76,163,239,.26)');
     ctx.fillStyle = '#78c8d1';
     for (const point of dots) {
@@ -342,6 +384,10 @@
     }
     ctx.globalAlpha = 1;
     ring(0, 0, 1, 'rgba(114,228,214,.52)');
+    if (selectedCase) {
+      drawCase(selectedCase);
+      return;
+    }
     routes.forEach((bundle, i) => {
       const baseline = bundle[0];
       if (projected.copy(baseline[0]).applyQuaternion(rotation).z <= 0 ||
@@ -515,7 +561,12 @@
     if (visible && !document.hidden && !reduced.matches) frame = requestAnimationFrame(animate);
   }
 
+  if (location.hash === '#case-studies') casePanel.open = true;
+  caseSelect.parentElement.hidden = false;
+  caseSelect.addEventListener('change', showCase);
+  casePanel.addEventListener('toggle', showCase);
   resize();
+  showCase();
   const layout = new ResizeObserver(resize);
   layout.observe(canvas);
   layout.observe(network);

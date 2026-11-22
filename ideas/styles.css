@@ -105,6 +105,18 @@ h1 .thin { font-weight: 420; color: #a5bcd4; }
 .hero-pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: rgba(24,36,58,.5); padding: 9px 14px; border-radius: 999px; color: #d2e1f3; font-size: 12px; }
 .hero-pill strong { font-variant-numeric: tabular-nums; font-size: 15px; color: #fff; }
 .hero-pill .small-dot { height: 6px; width: 6px; border-radius: 50%; background: #73dec6; }
+#case-studies { margin-bottom: 28px; border-block: 1px solid var(--line); background: rgba(14,24,43,.8); }
+#case-studies summary { padding: 12px 16px; color: #ccdee9; font-size: 13px; cursor: pointer; }
+#case-studies summary small { margin-left: 8px; color: #a4b5c9; }
+.case-caption, .case-picker { margin: 4px 16px 12px; font-size: 12px; color: var(--muted); }
+.case-picker select { max-width: 100%; padding: 5px; color: var(--text); background: var(--panel); border: 1px solid var(--line-strong); border-radius: 6px; font: inherit; }
+#case-studies article { margin: 0 16px 16px; max-width: 760px; padding-left: 12px; border-left: 2px solid #91ebcd; }
+#case-studies article[data-outcome="被害"] { border-color: #ff6774; }
+#case-studies article small, #case-studies article a { font-size: 12px; color: #b5d5ef; }
+#case-studies article h3 { font-size: 16px; margin: 2px 0; }
+#case-studies article p { font-size: 13px; margin: 3px 0; }
+.case-picker:not([hidden]) { display: block; }
+main:has(#case-studies[open]) .incident-key { visibility: hidden; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 21px; }
 .kicker { color: var(--dim); font-size: 12px; letter-spacing: .12em; font-weight: 800; text-transform: uppercase; }
 h2 { font-size: clamp(22px, 2.8vw, 29px); margin: 5px 0 0; letter-spacing: -.03em; line-height: 1.4; }
