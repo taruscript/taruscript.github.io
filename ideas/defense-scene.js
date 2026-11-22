@@ -490,10 +490,10 @@
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
-    const compact = window.matchMedia('(max-width: 590px)').matches;
-    radius = Math.min(height * .36, width * .153, 164);
-    centerX = width * (compact ? .81 : .78);
-    centerY = height * (compact ? .53 : .49);
+    const fullWidth = getComputedStyle(canvas).position === 'static';
+    radius = fullWidth ? Math.min(width, height) * .38 : Math.min(height * .36, width * .153, 164);
+    centerX = width * (fullWidth ? .5 : .78);
+    centerY = height * (fullWidth ? .5 : .49);
     draw();
     layoutNetwork();
   }

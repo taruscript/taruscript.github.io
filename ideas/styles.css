@@ -93,9 +93,6 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .incident-in { background: #e6aa69; clip-path: polygon(0 32%,65% 32%,65% 0,100% 50%,65% 100%,65% 68%,0 68%); }
 .incident-block { border: 1px solid #91ebcd; border-radius: 50%; }
 .incident-hit { border: 1px solid #ff6774; transform: rotate(45deg); }
-@media(max-width: 690px) {
-  .incident-key { position: static; transform: none; margin-top: 15px; }
-}
 .eyebrow { color: #76cabe; font-size: 11px; letter-spacing: .16em; font-weight: 800; text-transform: uppercase; display: flex; align-items: center; gap: 11px; }
 .eyebrow::before { content: ""; display: block; width: 23px; height: 1px; background: currentColor; }
 h1 { font-size: clamp(33px, 4.6vw, 62px); line-height: 1.23; letter-spacing: -.052em; margin: 20px 0 20px; max-width: 960px; font-weight: 850; }
@@ -103,9 +100,6 @@ h1 .thin { font-weight: 420; color: #a5bcd4; }
 .hero-description { max-width: 810px; margin: 0; font-size: 15px; color: #b6c5da; line-height: 1.95; }
 @media(min-width: 591px) {
   .hero-description { max-width: min(810px, 57%); }
-}
-@media(max-width: 590px) {
-  .defense-scene { height: 170px; opacity: .8; mask-image: linear-gradient(90deg, transparent 34%, #000 81%); }
 }
 .hero-footer { display: flex; align-items: center; gap: 11px; flex-wrap: wrap; margin-top: 29px; }
 .hero-pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: rgba(24,36,58,.5); padding: 9px 14px; border-radius: 999px; color: #d2e1f3; font-size: 12px; }
@@ -250,6 +244,17 @@ body.drawer-open { overflow: hidden; }
   .topic-tile .tile-number { min-width: 27px; }
   .topic-tile .tile-arrow { margin-top: 0; }
 }
+@media (max-width: 767px), (max-width: 950px) and (orientation: landscape) and (pointer: coarse) {
+  .hero.container { display: flex; flex-direction: column; width: 100%; padding: 32px 0; }
+  .hero > :is(.eyebrow, h1, .hero-footer) { margin-inline: max(14px, 4vw); }
+  .hero h1 { margin-block: 14px 0; }
+  .defense-scene {
+    order: 1; position: static; width: 100%; height: min(96vw, 80svh, 520px);
+    mask-image: none;
+  }
+  .hero-footer { order: 2; margin-top: 6px; }
+  .hero-description, .incident-key, .globe-source-description { display: none; }
+}
 @media(max-width: 590px){
   .container { width: calc(100% - 28px); }
   .header-inner { min-height: 68px; }
@@ -258,10 +263,7 @@ body.drawer-open { overflow: hidden; }
   .brand-copy small { font-size: 9px; }
   .header-link { display:none; }
   .draft-tag { font-size: 9px; padding: 5px 9px; }
-  .hero { padding: 58px 0 38px; }
   h1 { font-size: clamp(30px,8.4vw,43px); }
-  .hero-description { font-size: 13px; }
-  .hero-footer { margin-top: 20px; }
   .hero-pill { padding: 7px 11px; font-size: 10px; }
   .section-heading { display: block; }
   .section-note { margin-top: 10px; text-align:left; }
