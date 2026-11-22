@@ -61,12 +61,15 @@
 
   const hubs = [[139.7,35.7],[103.8,1.4],[72.9,19.1],[2.4,48.9],[151.2,-33.9],
     [55.3,25.2],[37,-1.3],[-122.4,37.8],[-74,40.7],[-46.6,-23.6]].map(([lon, lat]) => onGlobe(lon, lat));
-  function corridor(a, b, lift) {
-    return sample(64, t => hubs[a].clone().lerp(hubs[b], t).normalize().multiplyScalar(1 + lift * Math.sin(Math.PI * t)));
+  function corridor(source, target, lift, segments = 64) {
+    const angle = source.angleTo(target);
+    const tangent = target.clone().addScaledVector(source, -Math.cos(angle)).normalize();
+    return sample(segments, t => source.clone().multiplyScalar(Math.cos(angle * t))
+      .addScaledVector(tangent, Math.sin(angle * t)).multiplyScalar(1 + lift * Math.sin(Math.PI * t)));
   }
 
   const routes = [[0,1],[0,4],[1,2],[1,4],[2,5],[3,5],[5,6],[3,8],[7,8],[8,9],[7,0]].map(([a,b]) =>
-    [.06, .12, .18].map(lift => corridor(a, b, lift)));
+    [.06, .12, .18].map(lift => corridor(hubs[a], hubs[b], lift)));
 
   function path(points, color) {
     ctx.beginPath();
@@ -143,7 +146,7 @@
     [7.2, 4, 1, true], [7.9, 5, 1], [8.5, 0, 1], [9, 2, 1],
     [9.5, 4, 1], [12.8, 2, 0], [15.6, 1, 4]
   ].map(([at, source, target, breach = false]) => ({
-    at, target, breach, track: corridor(source, target, .21)
+    at, target, breach, track: corridor(hubs[source], hubs[target], .21)
   }));
   const sensorRadius = .085;
   const sensors = new Map([[0, 'TYO'], [1, 'SIN'], [2, 'BOM'], [4, 'SYD'], [5, 'DXB']]);
@@ -159,12 +162,77 @@
     return {x: a.x + (b.x - a.x) * (position - i), y: a.y + (b.y - a.y) * (position - i)};
   }
 
+  // Sample the same land dots as the map, with a repeatable schedule for each source.
+  const trafficSources = Array.from({length: 320}, (_, i) => {
+    const origin = dots[Math.floor((i + .5) * dots.length / 320)];
+    const receivers = [1, 0, 1, 4, 1, 2, 1, 5].filter(id => origin.distanceTo(hubs[id]) > .45);
+    const target = receivers[i % receivers.length];
+    const phase = i * .61803398875 % 1;
+    return {
+      origin, target, track: corridor(origin, hubs[target], .025 + .09 * phase, 40),
+      background: 18 * phase, burst: 4.8 + 4.5 * (i * .754877666 % 1),
+      duration: 2.2 + 1.5 * phase
+    };
+  });
+
+  const waveClock = time => (time + 6.7) % 18;
+
+  function drawTraffic(time) {
+    const clock = waveClock(time);
+    const compact = radius < 95;
+    ctx.save();
+    ctx.lineWidth = (compact ? .57 : .84) / radius;
+    ctx.strokeStyle = '#e4a15e';
+    for (const [index, flow] of trafficSources.entries()) {
+      if (compact && index % 3 === 0) continue;
+      const node = screen(hubs[flow.target]);
+      // A steady trickle is joined by two overlapping waves with closely spaced launches.
+      for (const start of [flow.background, flow.burst, flow.burst + 1.85]) {
+        const age = (clock - start + 18) % 18;
+        if (age >= flow.duration) continue;
+        const progress = age / flow.duration;
+        const last = flow.track.length - 1;
+        const head = Math.floor(last * progress);
+        const tail = Math.max(0, head - 8);
+        let penDown = false;
+        ctx.beginPath();
+        for (let j = tail; j <= Math.min(head + 1, last); j++) {
+          const p = projected.copy(flow.track[j]);
+          if (j > head) p.lerpVectors(flow.track[head], flow.track[j], last * progress - head);
+          p.applyQuaternion(rotation);
+          if (p.z <= 0 || Math.hypot(p.x - node.x, -p.y - node.y) < sensorRadius) {
+            penDown = false;
+            continue;
+          }
+          if (penDown) ctx.lineTo(p.x, -p.y);
+          else ctx.moveTo(p.x, -p.y);
+          penDown = true;
+        }
+        ctx.globalAlpha = (.22 + .28 * (1 - progress)) * Math.min(1, age * 5);
+        ctx.stroke();
+        if (penDown) {
+          ctx.fillStyle = '#ffd69b';
+          const size = (compact ? 1 : 1.5) / radius;
+          ctx.fillRect(projected.x - size / 2, -projected.y - size / 2, size, size);
+        }
+        if (age < .65) {
+          const p = projected.copy(flow.origin).applyQuaternion(rotation);
+          if (p.z > 0) {
+            ctx.globalAlpha = .5 * (1 - age / .65);
+            spot(p.x, -p.y, .009, '#f2b871');
+          }
+        }
+      }
+    }
+    ctx.restore();
+  }
+
   function drawIncidents(time) {
     const cycle = 18, approach = 1.8;
     ctx.save();
     ctx.lineWidth = 1.5 / radius;
     for (const {at, target, breach, track} of events) {
-      const age = ((time + 1.3 - at) % cycle + cycle) % cycle;
+      const age = (waveClock(time) - at + cycle) % cycle;
       const afterImpact = age - approach;
       if (afterImpact >= (breach ? 3 : 1)) continue;
       const node = screen(hubs[target]);
@@ -219,7 +287,7 @@
   }
 
   let width, height, dpr, radius, centerX, centerY;
-  let elapsed = reduced.matches ? 9 : 0;
+  let elapsed = reduced.matches ? 3.6 : 0;
   function draw() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
@@ -263,6 +331,7 @@
       const p = projected.copy(route[index]).applyQuaternion(rotation);
       if (p.z > 0) spot(p.x, -p.y, .011, '#cfedff');
     });
+    drawTraffic(elapsed);
     hubs.forEach((hub, i) => {
       const p = projected.copy(hub).applyQuaternion(rotation);
       if (p.z <= 0) return;
