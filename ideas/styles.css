@@ -18,6 +18,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
+  position: relative; isolation: isolate;
   margin: 0;
   color: var(--text);
   background: var(--bg);
@@ -37,6 +38,20 @@ body::before {
     radial-gradient(ellipse 42% 55% at 5% 42%, rgba(35,162,151,.115), transparent 75%),
     linear-gradient(180deg, #0d1630, var(--bg) 96%);
   pointer-events: none;
+}
+.peer-network {
+  position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1;
+  pointer-events: none; overflow: hidden;
+}
+.peer-links { fill: none; stroke: #64b9c0; stroke-opacity: .25; stroke-width: .8; }
+.peer-face { fill: #5bd1c0; opacity: .034; }
+.peer-node { fill: #7cd8c9; fill-opacity: .66; }
+.peer-relay { fill: #112d39; stroke: #7cd8c9; stroke-opacity: .62; }
+.peer-route { fill: none; stroke: #7ce2cf; stroke-opacity: .31; stroke-width: 1; }
+.peer-packet { fill: #b6ffee; }
+.peer-network { mask-image: linear-gradient(105deg, #000, rgba(0,0,0,.48) 21%, rgba(0,0,0,.62) 48%, #000 85%); }
+@media(max-width: 590px) {
+  .peer-network { opacity: .77; }
 }
 button, input { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }

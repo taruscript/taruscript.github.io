@@ -8,6 +8,9 @@
   const { Vector3, Quaternion } = DefenseMath;
   const rad = Math.PI / 180;
   const turn = 2 * Math.PI;
+  const network = document.querySelector('.peer-network');
+  const uplinks = [1, 3, 4];
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const up = new Vector3(0, 1, 0);
   const pitch = new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), 18 * rad);
   const tilt = new Quaternion().setFromAxisAngle(new Vector3(0, 0, 1), -12 * rad);
@@ -92,6 +95,7 @@
   // Incoming pulses terminate at the outer sensor ring.
   function perimeter(time) {
     for (let i = 0; i < 8; i++) {
+      if (uplinks.includes(i)) continue;
       ctx.save();
       ctx.rotate((i * 45 - 17) * rad);
       const end = 2.22 + (i % 3) * .22;
@@ -180,6 +184,117 @@
     }
   }
 
+  // The mesh uses page coordinates so its three uplinks stay on the globe as the page scrolls.
+  function layoutNetwork() {
+    const bounds = network.getBoundingClientRect();
+    const globe = canvas.getBoundingClientRect();
+    const cx = globe.left - bounds.left + centerX;
+    const cy = globe.top - bounds.top + centerY;
+    const compact = bounds.width < 600;
+    const cols = Math.max(3, Math.ceil(bounds.width / (compact ? 115 : 180)));
+    const stepX = bounds.width / cols;
+    const stepY = compact ? 112 : 141;
+    const rows = Math.ceil(bounds.height / stepY) + 2;
+    const fragment = document.createDocumentFragment();
+    const peers = [];
+    const edges = [];
+    const faces = [];
+    const routes = [];
+    let seed = 73;
+    function random() {
+      seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+      return seed / 4294967296;
+    }
+    function svg(tag, attrs, parent = fragment) {
+      const element = document.createElementNS(network.namespaceURI, tag);
+      for (const [key, value] of Object.entries(attrs)) element.setAttribute(key, value);
+      parent.append(element);
+      return element;
+    }
+    const coord = p => p.x.toFixed(1) + ',' + p.y.toFixed(1);
+    // Keep links outside the dial, including diagonals with both ends outside it.
+    function clearsGlobe(a, b) {
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const t = Math.max(0, Math.min(1, ((cx - a.x) * dx + (cy - a.y) * dy) / (dx * dx + dy * dy)));
+      return Math.hypot(a.x + dx * t - cx, a.y + dy * t - cy) > radius * 1.29;
+    }
+    function link(a, b) {
+      if (!a || !b || !clearsGlobe(a, b)) return false;
+      edges.push('M' + coord(a) + 'L' + coord(b));
+      a.links.push(b);
+      b.links.push(a);
+      return true;
+    }
+    for (let row = 0; row < rows; row++) {
+      const band = [];
+      for (let col = 0; col <= cols + 1; col++) {
+        const x = (col - .48 + (row % 2) * .42 + (random() - .5) * .75) * stepX;
+        const y = (row - .48 + (random() - .5) * .8) * stepY;
+        band.push({x, y, links: []});
+      }
+      peers.push(band);
+    }
+    for (let row = 1; row < rows; row++) {
+      for (let col = 0; col <= cols; col++) {
+        const peer = peers[row][col], right = peers[row][col + 1], prev = peers[row - 1][col];
+        const across = link(peer, right);
+        const up = link(peer, prev);
+        if (random() < .57 && link(prev, right) && across && up && random() < .38) {
+          faces.push('M' + coord(peer) + 'L' + coord(right) + 'L' + coord(prev) + 'Z');
+        }
+      }
+    }
+    const nodes = peers.flat().filter(p => p.links.length);
+    function walk(start, count) {
+      const trail = [start];
+      while (trail.length < count) {
+        const current = trail[trail.length - 1];
+        const choices = current.links.filter(p => !trail.includes(p));
+        if (!choices.length) break;
+        trail.push(choices[Math.floor(random() * choices.length)]);
+      }
+      return trail.map(coord);
+    }
+    for (const i of uplinks) {
+      const angle = (i * 45 - 17) * rad;
+      const cos = Math.cos(angle), sin = Math.sin(angle);
+      const port = (x, y = 0) => ({x: cx + radius * (x * cos - y * sin), y: cy + radius * (x * sin + y * cos)});
+      const tip = port(1.57, -.14);
+      const outward = nodes.filter(p => (p.x - tip.x) * cos + (p.y - tip.y) * sin > 0 && clearsGlobe(tip, p));
+      const nearest = outward.sort((a, b) => Math.hypot(a.x - tip.x, a.y - tip.y) - Math.hypot(b.x - tip.x, b.y - tip.y))[0];
+      if (nearest) routes.push([coord(port(1.19)), coord(port(1.43)), coord(tip), ...walk(nearest, 4)]);
+    }
+    // Local exchanges continue throughout the document, independently of the globe.
+    for (let row = 1; row < rows; row += 2) {
+      const candidates = peers[row].filter(p => p.links.length > 1 && p.x > 0 && p.x < bounds.width);
+      if (candidates.length) routes.push(walk(candidates[Math.floor(random() * candidates.length)], 4));
+    }
+    svg('path', {d: faces.join(''), class: 'peer-face'});
+    svg('path', {d: edges.join(''), class: 'peer-links'});
+    for (const route of routes) {
+      const d = 'M' + route.join('L');
+      svg('path', {d, class: 'peer-route'});
+      const packet = svg('g', {});
+      svg('circle', {r: 5, opacity: .12, class: 'peer-packet'}, packet);
+      svg('circle', {r: 1.7, class: 'peer-packet'}, packet);
+      svg('animateMotion', {path: d, dur: (6 + random() * 4) + 's',
+        begin: -random() * 10 + 's', repeatCount: 'indefinite', calcMode: 'paced'}, packet);
+    }
+    for (const peer of nodes) {
+      if (peer.links.length >= 4 && random() < .44) {
+        svg('circle', {cx: peer.x, cy: peer.y, r: 4.3, class: 'peer-relay'});
+      }
+      svg('circle', {cx: peer.x, cy: peer.y, r: 1.8, class: 'peer-node'});
+    }
+    network.replaceChildren(fragment);
+    updateNetworkPlayback();
+  }
+
+  function updateNetworkPlayback() {
+    if (reduced.matches || document.hidden) network.pauseAnimations();
+    else network.unpauseAnimations();
+  }
+
   function resize() {
     width = canvas.clientWidth;
     height = canvas.clientHeight;
@@ -192,9 +307,9 @@
     centerX = width * (compact ? .81 : .78);
     centerY = height * (compact ? .53 : .49);
     draw();
+    layoutNetwork();
   }
 
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   let visible = false, frame = 0, last = 0;
   function animate(now) {
     if (!last) last = now;
@@ -206,13 +321,16 @@
     frame = requestAnimationFrame(animate);
   }
   function updatePlayback() {
+    updateNetworkPlayback();
     cancelAnimationFrame(frame);
     last = 0;
     if (visible && !document.hidden && !reduced.matches) frame = requestAnimationFrame(animate);
   }
 
   resize();
-  new ResizeObserver(resize).observe(canvas);
+  const layout = new ResizeObserver(resize);
+  layout.observe(canvas);
+  layout.observe(network);
   new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
     updatePlayback();
