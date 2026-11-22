@@ -9,7 +9,7 @@
   <meta property="og:title" content="AI時代のトラスト＆セキュリティ｜32のテーマ候補">
   <meta property="og:description" content="技術・制度の両面から、AI時代のセキュリティを考える。4象限×各8テーマ。">
   <title>AI時代のトラスト＆セキュリティ | 32のグループワークテーマ</title>
-  <link rel="stylesheet" href="styles.css?v=28ff637815">
+  <link rel="stylesheet" href="styles.css?v=a0731b1de9">
 </head>
 <body>
   <svg class="peer-network" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"></svg>
@@ -49,7 +49,7 @@
       </div>
     </section>
 
-    <details id="case-studies" class="container">
+    <details id="case-studies" class="container case-collection">
       <summary>公表事例を地球儀で見る <small>被害 2件・防御 2件</small></summary>
       <p class="case-caption">地球儀の印は対象組織の国を示します。閉じると模擬通信に戻ります。</p>
       <label class="case-picker" hidden>事例を選択 <select id="case-select"></select></label>
@@ -77,6 +77,48 @@
         <p>10月4日と5日に、行政ポータルに対して計4回のサービス妨害攻撃がありました。エストニア情報システム庁は、防御対策が機能し、サービスへの影響はなかったと報告しています。</p>
         <a href="https://www.ria.ee/en/situation-cyberspace-october-2025">エストニア情報システム庁の月次報告</a>
       </article>
+    </details>
+
+    <details class="container case-collection">
+      <summary>AIを悪用した攻撃と防御 <small>2025–2026年の5事例</small></summary>
+      <div id="ai-cases">
+        <div class="ai-trend">
+          <h2>本人確認で増えたディープフェイク</h2>
+          <p>本人確認サービスのSumsubは、2026年11月17日、同社が観測したディープフェイク不正が前年比31%増えたと発表しました。一方、同社の本人確認における不正率全体は前年比28%低下し、1.6%でした。</p>
+          <p>集計対象は同社の2025年と2026年の本人確認・利用データで、不正サンプルは計580万件です。世界のサイバー攻撃全体の増加率は、この数字からは分かりません。</p>
+          <a href="https://sumsub.com/newsroom/a-new-era-of-humanity-over-half-of-businesses-report-fraud-involving-ai-agents-but-only-1-in-8-can-revoke-agentic-access/">Sumsubの調査結果と集計方法</a>
+        </div>
+        <article>
+          <small>2025年1月 · 送金を防止</small>
+          <h3>銀行DNB、経営陣を装った偽会議を招待段階で見抜く</h3>
+          <p>シンガポール拠点などの管理職に、財務責任者を名乗る会議招待が届きました。銀行は事前に詐欺と見抜き、調査のために会議に参加しました。画面に登場した経営トップの映像は過去の収録素材で、海外送金を指示した財務責任者の声はAIで加工されていました。</p>
+          <a href="https://bc.dnb.no/original/gallery/10314/files/original/22f4eb01-76bc-45fd-b523-653226960887.pdf#page=14">DNBの脅威報告書（PDF、14ページ）</a>
+        </article>
+        <article data-outcome="被害">
+          <small>2025年9月検知 · 一部で侵入成立</small>
+          <h3>AIを使ったサイバースパイ活動、約30組織が標的に</h3>
+          <p>Anthropicによると、攻撃者はClaude Codeに企業や政府機関への侵入作業を実行させました。約30の標的のうち、侵入が成功したのは少数でした。同社は特定したアカウントを停止し、影響を受けた組織に通知しました。</p>
+          <a href="https://www.anthropic.com/news/disrupting-AI-espionage">Anthropicの調査報告（2025年11月）</a>
+        </article>
+        <article>
+          <small>2026年1月公表 · 振込先の変更を阻止</small>
+          <h3>借り手の偽映像が使われた融資金詐欺、振込先の照合で阻止</h3>
+          <p>DNBの法人顧客に、融資金の振込先を変更するメールが届きました。顧客が口座番号の不一致に気づき、確認のために開いたビデオ会議にも、AIで借り手を装った人物が現れました。顧客は一連の照合を通じて不正送金を防ぎました。</p>
+          <a href="https://bc.dnb.no/original/gallery/10314/files/original/22f4eb01-76bc-45fd-b523-653226960887.pdf#page=13">DNBの脅威報告書（PDF、13ページ）</a>
+        </article>
+        <article data-outcome="被害">
+          <small>2026年5月 · 送金被害</small>
+          <h3>シンガポール首相を装う偽会議のあと、490万シンガポールドル以上を送金</h3>
+          <p>首相や政府高官が出席しているように見えるオンライン会議のあと、参加者が複数回に分けて送金しました。参加者が会議を案内したとされる政府高官に直接確認して、詐欺が発覚しました。警察は会議映像を入手し、首相が参加者に言及する場面などにディープフェイクを確認しました。</p>
+          <a href="https://www.police.gov.sg/Media-Hub/News/2026/05/20260514_advisory_on_scams_involving_impersonation_of_snr_govt_officials_incl_secy_cabinet">シンガポール警察の被害発表</a> · <a href="https://www.police.gov.sg/Media-Hub/News/2026/05/20260516_footage_from_zoom_video_conference_involving_impersonation_of_senior_government_officials">警察による会議映像の分析</a>
+        </article>
+        <article data-outcome="被害">
+          <small>2026年4〜6月観測 · 認証情報の流出</small>
+          <h3>AIエージェントを使った攻撃で、数千件の認証情報が流出</h3>
+          <p>Googleの調査チームは、すでに侵害されたクラウド環境で、攻撃者がAIを使って第三者の認証情報を収集した事例を報告しました。計画から実行までは6時間未満。流出した認証情報は数千件に上りました。</p>
+          <a href="https://cloud.google.com/blog/topics/threat-intelligence/from-prompting-to-autonomy-the-evolution-of-adversarial-ai">Google Threat Intelligence Groupの観測報告（2026年9月）</a>
+        </article>
+      </div>
     </details>
 
     <section class="container" id="matrix" aria-labelledby="matrix-title">
