@@ -115,12 +115,11 @@ h1 .thin { font-weight: 420; color: #a5bcd4; }
 .case-collection article small, .case-collection article a { font-size: 12px; color: #b5d5ef; }
 .case-collection article h3 { font-size: 16px; margin: 2px 0; }
 .case-collection article p { font-size: 13px; margin: 3px 0; }
-.case-collection:has(+ .case-collection) { margin-bottom: 0; border-bottom: 0; }
 .ai-trend { max-width: 760px; margin: 0 16px 20px; padding: 12px; border-radius: 6px; background: var(--panel); }
-.ai-trend h2 { font-size: 15px; margin: 0; }
+.case-collection .ai-trend summary { padding: 0; }
 .ai-trend p { margin: 5px 0; font-size: 13px; }
 .ai-trend a { color: #b5d5ef; font-size: 12px; }
-#ai-cases { scroll-margin-top: 80px; }
+#case-studies, #ai-cases { scroll-margin-top: min(52vh, 440px); }
 .case-picker:not([hidden]) { display: block; }
 main:has(#case-studies[open]) .incident-key { visibility: hidden; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 21px; }

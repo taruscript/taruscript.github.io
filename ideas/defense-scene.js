@@ -160,12 +160,19 @@
 
   const casePanel = document.getElementById('case-studies');
   const caseSelect = document.getElementById('case-select');
-  const cases = Array.from(casePanel.querySelectorAll('article'), article => {
-    const {country, lon, lat, outcome} = article.dataset;
-    const title = article.querySelector('h3').textContent;
-    caseSelect.add(new Option(outcome + ' · ' + title, String(caseSelect.length)));
-    return {article, country, lon: Number(lon), lat: Number(lat), outcome, point: onGlobe(Number(lon), Number(lat))};
-  });
+  const cases = [];
+  for (const group of casePanel.querySelectorAll('[data-case-group]')) {
+    const options = document.createElement('optgroup');
+    options.label = group.dataset.caseGroup;
+    for (const article of group.querySelectorAll('article')) {
+      const {country, lon, lat, outcome, label} = article.dataset;
+      const title = label || article.querySelector('h3').textContent;
+      options.append(new Option(outcome + ' · ' + title, String(cases.length)));
+      const point = lon && lat ? onGlobe(Number(lon), Number(lat)) : null;
+      cases.push({article, country, lon: Number(lon), lat: Number(lat), outcome, point});
+    }
+    caseSelect.append(options);
+  }
   const casePitch = new Quaternion();
   const east = new Vector3(1, 0, 0);
   function showCase() {
@@ -175,6 +182,19 @@
   }
 
   function drawCase(entry) {
+    if (!entry.point) {
+      ctx.save();
+      ctx.font = (13 / radius) + 'px sans-serif';
+      ctx.textAlign = 'center';
+      const label = entry.country + ' · ' + entry.outcome;
+      const halfWidth = ctx.measureText(label).width / 2 + .07;
+      ctx.fillStyle = '#102438';
+      ctx.fillRect(-halfWidth, -.1, halfWidth * 2, .22);
+      ctx.fillStyle = '#eff6ff';
+      ctx.fillText(label, 0, .05);
+      ctx.restore();
+      return;
+    }
     const p = screen(entry.point);
     ctx.lineWidth = 1.8 / radius;
     ctx.save();
@@ -367,7 +387,7 @@
     sphere.addColorStop(1, '#1a435c');
     spot(0, 0, 1, sphere);
     const selectedCase = casePanel.open ? cases[caseSelect.selectedIndex] : null;
-    if (selectedCase) {
+    if (selectedCase?.point) {
       casePitch.setFromAxisAngle(east, selectedCase.lat * rad);
       rotation.setFromAxisAngle(up, -selectedCase.lon * rad).premultiply(casePitch).premultiply(tilt);
     } else {
