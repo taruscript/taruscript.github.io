@@ -100,9 +100,8 @@
   }
 
   const spokeAngle = lane => (lane * 45 - 17) * rad;
-  // A gently moving observation angle keeps both endpoints of the featured flows visible.
   function orientGlobe(time) {
-    rotation.setFromAxisAngle(up, (-98 + 9 * Math.sin(time * .055)) * rad).premultiply(pitch).premultiply(tilt);
+    rotation.setFromAxisAngle(up, -98 * rad + time * turn / 80).premultiply(pitch).premultiply(tilt);
   }
 
   function observationGrid() {
@@ -140,40 +139,59 @@
     spot(1.19 * Math.cos(sweep + .38), 1.19 * Math.sin(sweep + .38), .017, '#c9fff0');
   }
 
-  // Synthetic traffic concentrates on the receiving site as the wave builds.
-  const events = [
-    [0, 1, 0], [2.8, 4, 1], [4.8, 2, 1], [6.2, 0, 1],
-    [7.2, 4, 1, true], [7.9, 5, 1], [8.5, 0, 1], [9, 2, 1],
-    [9.5, 4, 1], [12.8, 2, 0], [15.6, 1, 4]
-  ].map(([at, source, target, breach = false]) => ({
-    at, target, breach, track: corridor(hubs[source], hubs[target], .21)
-  }));
+  // MDDR 2026 p.32: share of customer threat impact, Jan–Jun 2026, in published order.
+  // Normalize within the twelve reported destinations; coordinates are illustrative.
+  const destinations = [
+    ['米国', 25.5, -98, 38], ['イスラエル', 7.6, 34.9, 32], ['ウクライナ', 4.8, 31, 49],
+    ['台湾', 3.9, 121, 23.6], ['英国', 3.8, -1.6, 52.5], ['UAE', 2.8, 54.4, 24.4],
+    ['インド', 2.5, 78, 22], ['日本', 2.5, 138, 36], ['カナダ', 1.8, -98, 54],
+    ['ドイツ', 1.7, 10, 51], ['豪州', 1.5, 134, -25], ['フィリピン', 1.5, 122, 13]
+  ].map(([name, share, lon, lat]) => ({ name, share, point: onGlobe(lon, lat) }));
+  const totalShare = destinations.reduce((sum, site) => sum + site.share, 0);
+  function destinationAt(fraction) {
+    let amount = fraction * totalShare;
+    for (const site of destinations) {
+      amount -= site.share;
+      if (amount < 0) return site;
+    }
+    return destinations[destinations.length - 1];
+  }
   const sensorRadius = .085;
-  const sensors = new Map([[0, 'TYO'], [1, 'SIN'], [2, 'BOM'], [4, 'SYD'], [5, 'DXB']]);
 
   function screen(point) {
     const p = projected.copy(point).applyQuaternion(rotation);
-    return {x: p.x, y: -p.y};
+    return {x: p.x, y: -p.y, z: p.z};
   }
 
   function trackPoint(track, position) {
     const i = Math.floor(position);
     const a = screen(track[i]), b = screen(track[Math.min(i + 1, track.length - 1)]);
-    return {x: a.x + (b.x - a.x) * (position - i), y: a.y + (b.y - a.y) * (position - i)};
+    return {x: a.x + (b.x - a.x) * (position - i), y: a.y + (b.y - a.y) * (position - i),
+      z: a.z + (b.z - a.z) * (position - i)};
   }
 
   // Sample the same land dots as the map, with a repeatable schedule for each source.
+  const usedOrigins = new Set();
   const trafficSources = Array.from({length: 320}, (_, i) => {
-    const origin = dots[Math.floor((i + .5) * dots.length / 320)];
-    const receivers = [1, 0, 1, 4, 1, 2, 1, 5].filter(id => origin.distanceTo(hubs[id]) > .45);
-    const target = receivers[i % receivers.length];
+    // Permute equal-width strata to keep origins independent of destination rank.
+    const target = destinationAt(((i * 137 % 320) + .5) / 320);
+    let index = Math.floor((i + .5) * dots.length / 320);
+    while (usedOrigins.has(index) || dots[index].distanceTo(target.point) < .45) index = (index + 1) % dots.length;
+    usedOrigins.add(index);
+    const origin = dots[index];
     const phase = i * .61803398875 % 1;
     return {
-      origin, target, track: corridor(origin, hubs[target], .025 + .09 * phase, 40),
+      origin, target, track: corridor(origin, target.point, .025 + .09 * phase, 40),
       background: 18 * phase, burst: 4.8 + 4.5 * (i * .754877666 % 1),
       duration: 2.2 + 1.5 * phase
     };
   });
+
+  // Highlight outcomes on actual simulated routes, including on the far hemisphere.
+  const events = trafficSources.filter((_, i) => i % 5 === 0).map((flow, i) => ({
+    target: flow.target, track: flow.track, at: flow.burst + (i % 4) * 3,
+    breach: i % 9 === 0
+  }));
 
   const waveClock = time => (time + 6.7) % 18;
 
@@ -185,7 +203,7 @@
     ctx.strokeStyle = '#e4a15e';
     for (const [index, flow] of trafficSources.entries()) {
       if (compact && index % 3 === 0) continue;
-      const node = screen(hubs[flow.target]);
+      const node = screen(flow.target.point);
       // A steady trickle is joined by two overlapping waves with closely spaced launches.
       for (const start of [flow.background, flow.burst, flow.burst + 1.85]) {
         const age = (clock - start + 18) % 18;
@@ -200,7 +218,7 @@
           const p = projected.copy(flow.track[j]);
           if (j > head) p.lerpVectors(flow.track[head], flow.track[j], last * progress - head);
           p.applyQuaternion(rotation);
-          if (p.z <= 0 || Math.hypot(p.x - node.x, -p.y - node.y) < sensorRadius) {
+          if (p.z <= 0 || (node.z > 0 && Math.hypot(p.x - node.x, -p.y - node.y) < sensorRadius)) {
             penDown = false;
             continue;
           }
@@ -235,7 +253,8 @@
       const age = (waveClock(time) - at + cycle) % cycle;
       const afterImpact = age - approach;
       if (afterImpact >= (breach ? 3 : 1)) continue;
-      const node = screen(hubs[target]);
+      const node = screen(target.point);
+      if (node.z < .08) continue;
       // Find the first contact with the local receiver ring along this projected route.
       let edge = track.length - 2;
       while (edge > 0) {
@@ -246,15 +265,17 @@
       const outside = screen(track[edge]), inside = screen(track[edge + 1]);
       const outerDistance = Math.hypot(outside.x - node.x, outside.y - node.y);
       const innerDistance = Math.hypot(inside.x - node.x, inside.y - node.y);
+      if (outerDistance <= sensorRadius || outerDistance <= innerDistance) continue;
       const contact = edge + (outerDistance - sensorRadius) / (outerDistance - innerDistance);
       const position = contact * Math.min(1, age / approach);
       const head = trackPoint(track, position);
+      if (head.z <= 0) continue;
       ctx.globalAlpha = 1;
       if (afterImpact < 0) {
         ctx.globalAlpha = Math.min(1, age / .25);
         const tail = trackPoint(track, Math.max(0, position - 5));
         ctx.beginPath();
-        ctx.moveTo(tail.x, tail.y);
+        ctx.moveTo(tail.z > 0 ? tail.x : head.x, tail.z > 0 ? tail.y : head.y);
         ctx.lineTo(head.x, head.y);
         ctx.strokeStyle = '#e6a35e';
         ctx.stroke();
@@ -332,20 +353,22 @@
       if (p.z > 0) spot(p.x, -p.y, .011, '#cfedff');
     });
     drawTraffic(elapsed);
-    hubs.forEach((hub, i) => {
-      const p = projected.copy(hub).applyQuaternion(rotation);
-      if (p.z <= 0) return;
-      const x = p.x, y = -p.y;
+    const labels = [];
+    for (const site of destinations) {
+      const {x, y, z} = screen(site.point);
+      if (z <= 0) continue;
       spot(x, y, .017, '#dcf8ff');
-      if (!sensors.has(i)) return;
       ring(x, y, sensorRadius, '#65bcff');
       ring(x, y, sensorRadius + .018, 'rgba(107,195,244,.55)', -.8, 1.3);
-      if (radius >= 95) {
-        ctx.font = (9 / radius) + 'px monospace';
-        ctx.fillStyle = '#b6e4ff';
-        ctx.fillText(sensors.get(i), x + sensorRadius + .025, y + .02);
-      }
-    });
+      if (radius < 95 || z < .2) continue;
+      ctx.font = (10 / radius) + 'px sans-serif';
+      const left = x + sensorRadius + .025;
+      const right = left + ctx.measureText(site.name).width;
+      if (labels.some(box => left < box.right && right > box.left && Math.abs(y - box.y) * radius < 13)) continue;
+      labels.push({left, right, y});
+      ctx.fillStyle = '#cfefff';
+      ctx.fillText(site.name, left, y + .02);
+    }
     drawIncidents(elapsed);
   }
 
