@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="AI時代のトラスト＆セキュリティを4象限×32のテーマで探せる、インタラクティブなグループワークテーマ候補集。">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="AI時代のトラスト＆セキュリティ｜32のテーマ候補">
+  <meta property="og:description" content="技術・制度の両面から、AI時代のセキュリティを考える。4象限×各8テーマ。">
+  <title>AI時代のトラスト＆セキュリティ | 32のグループワークテーマ</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0a1020;
+      --bg-elevated: #10192c;
+      --panel: #121d31;
+      --panel-2: #17233a;
+      --text: #f0f5fe;
+      --muted: #a4b2c8;
+      --dim: #788aa5;
+      --line: rgba(179,199,227,.14);
+      --line-strong: rgba(179,199,227,.26);
+      --accent-ac: #5be0cb;
+      --accent-ad: #c1a4ff;
+      --accent-bc: #79b6ff;
+      --accent-bd: #ffc079;
+      --radius: 22px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+      font-feature-settings: "palt";
+      line-height: 1.65;
+      min-width: 320px;
+    }
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 690px;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse 38% 42% at 86% 7%, rgba(57,112,221,.19), transparent 72%),
+        radial-gradient(ellipse 42% 55% at 5% 42%, rgba(35,162,151,.115), transparent 75%),
+        linear-gradient(180deg, #0d1630, var(--bg) 96%);
+      pointer-events: none;
+    }
+    button, input { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #8cc5ff; outline-offset: 3px; }
+    ::selection { background: #3c7696; color: #fff; }
+    .container { width: min(1330px, calc(100% - 64px)); margin-inline: auto; }
+    .site-header { border-bottom: 1px solid rgba(195,218,255,.09); }
+    .header-inner { min-height: 79px; display: flex; gap: 20px; align-items: center; justify-content: space-between; }
+    .brand { display: flex; align-items: center; gap: 13px; text-decoration: none; }
+    .brand-mark {
+      width: 42px; height: 42px; display: grid; place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #c6f2e8, #58aee4);
+      color: #09223a;
+      box-shadow: 0 7px 28px rgba(66,169,194,.17);
+      font-size: 16px; font-weight: 900; letter-spacing: -.07em;
+    }
+    .brand-copy { display: flex; flex-direction: column; line-height: 1.35; gap: 2px; }
+    .brand-copy strong { font-size: 14px; letter-spacing: .015em; }
+    .brand-copy small { color: var(--dim); font-size: 11px; letter-spacing: .04em; }
+    .header-right { display: flex; align-items: center; gap: 14px; }
+    .draft-tag { color: #b9d3ec; border: 1px solid var(--line-strong); border-radius: 999px; padding: 6px 12px; font-size: 11px; letter-spacing: .08em; }
+    .header-link { color: #c9d8ef; text-decoration: none; font-size: 12px; }
+    .header-link:hover { color: #fff; }
+    .hero { padding: 82px 0 52px; }
+    .eyebrow { color: #76cabe; font-size: 11px; letter-spacing: .16em; font-weight: 800; text-transform: uppercase; display: flex; align-items: center; gap: 11px; }
+    .eyebrow::before { content: ""; display: block; width: 23px; height: 1px; background: currentColor; }
+    h1 { font-size: clamp(33px, 4.6vw, 62px); line-height: 1.23; letter-spacing: -.052em; margin: 20px 0 20px; max-width: 960px; font-weight: 850; }
+    h1 .thin { font-weight: 420; color: #a5bcd4; }
+    .hero-description { max-width: 810px; margin: 0; font-size: 15px; color: #b6c5da; line-height: 1.95; }
+    .hero-footer { display: flex; align-items: center; gap: 11px; flex-wrap: wrap; margin-top: 29px; }
+    .hero-pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: rgba(24,36,58,.5); padding: 9px 14px; border-radius: 999px; color: #d2e1f3; font-size: 12px; }
+    .hero-pill strong { font-variant-numeric: tabular-nums; font-size: 15px; color: #fff; }
+    .hero-pill .small-dot { height: 6px; width: 6px; border-radius: 50%; background: #73dec6; }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 21px; }
+    .kicker { color: var(--dim); font-size: 12px; letter-spacing: .12em; font-weight: 800; text-transform: uppercase; }
+    h2 { font-size: clamp(22px, 2.8vw, 29px); margin: 5px 0 0; letter-spacing: -.03em; line-height: 1.4; }
+    .section-note { color: var(--muted); font-size: 12px; max-width: 470px; margin: 0 0 2px; text-align: right; }
+    .toolbox {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+      gap: 14px; margin-bottom: 24px;
+      border: 1px solid var(--line); border-radius: 18px;
+      padding: 12px;
+      background: rgba(18,29,49,.64);
+    }
+    .filters { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .filter-button { padding: 8px 13px; color: #aabbd2; font-size: 12px; background: transparent; border: 1px solid transparent; border-radius: 10px; cursor: pointer; white-space: nowrap; transition: background .15s, color .15s; }
+    .filter-button:hover { color: #e6f1ff; background: rgba(255,255,255,.06); }
+    .filter-button[aria-pressed="true"] { color: #f3f9ff; background: #293a56; border-color: rgba(145,182,229,.22); }
+    .search { position: relative; min-width: min(260px, 100%); flex: 0 1 310px; }
+    .search svg { width: 18px; height: 18px; position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #9caec7; pointer-events: none; }
+    .search input { width: 100%; background: #0b1426; color: #f1f6fc; border: 1px solid rgba(176,200,232,.22); border-radius: 11px; padding: 10px 13px 10px 40px; outline: 0; font-size: 13px; }
+    .search input:focus { border-color: #72b6d0; box-shadow: 0 0 0 3px rgba(87,155,196,.13); }
+    .search input::placeholder { color: #7e92ae; }
+    .matrix-caption { display: flex; justify-content: space-between; align-items: center; margin: 0 1px 17px; gap: 12px; }
+    .matrix-caption p { margin: 0; font-size: 12px; color: var(--muted); }
+    .result-counter { color: #9fb7cd; font-size: 12px; font-variant-numeric: tabular-nums; }
+    .result-counter strong { color: #fff; font-size: 15px; }
+    .matrix-grid { display: grid; grid-template-columns: 148px minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: 64px auto auto; gap: 14px; align-items: stretch; }
+    .corner-label { border: 1px solid var(--line); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: #8fa8c5; text-align: center; font-size: 11px; background: rgba(28,41,66,.3); letter-spacing: .045em; }
+    .column-label { border: 1px solid var(--line); border-radius: 18px; background: rgba(26,39,61,.75); display: flex; gap: 12px; align-items: center; padding: 13px 18px; }
+    .column-label .axis-code { color: #fff; background: rgba(255,255,255,.07); font-size: 17px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 11px; font-weight: 850; }
+    .column-label strong { display: block; font-size: 14px; line-height: 1.4; }
+    .column-label small { color: var(--dim); font-size: 11px; }
+    .row-label { display: flex; flex-direction: column; justify-content: center; gap: 13px; padding: 20px 17px; border-radius: 18px; border: 1px solid var(--line); min-height: 440px; background: rgba(26,39,61,.65); }
+    .row-label .axis-code { display: grid; place-items: center; height: 50px; width: 50px; border: 1px solid currentColor; border-radius: 14px; font-size: 26px; font-weight: 800; }
+    .row-label strong { font-size: 15px; letter-spacing: -.04em; line-height: 1.5; }
+    .row-label p { font-size: 11px; line-height: 1.6; color: var(--muted); margin: 0; }
+    .row-A .axis-code { color: #73d7c2; }
+    .row-B .axis-code { color: #99b7ff; }
+    .quadrant {
+      --quad: var(--accent-ac);
+      position: relative; isolation: isolate; border: 1px solid var(--line);
+      border-radius: 20px; padding: 20px;
+      background: linear-gradient(145deg, color-mix(in srgb, var(--quad), transparent 94%), rgba(18,29,49,.95) 45%);
+      min-width: 0;
+    }
+    .quadrant::before { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; box-shadow: inset 0 2px 0 color-mix(in srgb, var(--quad), transparent 70%); z-index: -1; }
+    .quadrant[data-quad="AC"] { --quad: var(--accent-ac); }
+    .quadrant[data-quad="AD"] { --quad: var(--accent-ad); }
+    .quadrant[data-quad="BC"] { --quad: var(--accent-bc); }
+    .quadrant[data-quad="BD"] { --quad: var(--accent-bd); }
+    .quadrant-heading { display: flex; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 16px; }
+    .quadrant-heading h3 { font-size: 13px; margin: 2px 0 2px; font-weight: 800; letter-spacing: -.02em; }
+    .quadrant-heading small { color: var(--quad); font-size: 10px; letter-spacing: .1em; font-weight: 700; }
+    .quadrant-count { color: #c5d4e9; font-size: 11px; white-space: nowrap; border: 1px solid var(--line); background: rgba(255,255,255,.035); border-radius: 999px; padding: 4px 10px; font-variant-numeric: tabular-nums; }
+    .mobile-column-tag { display:none; }
+    .topics-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .topic-tile {
+      color: var(--text); min-height: 104px; min-width: 0;
+      display: flex; align-items: start; gap: 10px; flex-direction: column; text-align: left;
+      cursor: pointer; border: 1px solid rgba(181,200,231,.11); border-radius: 14px;
+      background: #17253a; padding: 13px 13px 12px;
+      transition: transform .17s ease, border-color .17s ease, box-shadow .17s ease, background .17s ease;
+    }
+    .topic-tile:hover { transform: translateY(-2px); background: #20304a; border-color: color-mix(in srgb, var(--quad), transparent 38%); box-shadow: 0 12px 25px rgba(0,0,0,.13); }
+    .topic-tile .tile-number { color: var(--quad); font-weight: 850; font-size: 12px; letter-spacing: .04em; font-variant-numeric: tabular-nums; line-height: 1.2; }
+    .topic-tile .tile-label { font-size: 12px; font-weight: 700; line-height: 1.55; letter-spacing: -.02em; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+    .topic-tile .tile-arrow { margin-left: auto; margin-top: auto; font-size: 13px; line-height: 1; color: color-mix(in srgb, var(--quad), #fff 20%); opacity: .8; }
+    .empty-quad { color: var(--muted); border: 1px dashed var(--line-strong); border-radius: 13px; padding: 28px 10px; text-align: center; grid-column: 1 / -1; font-size: 12px; }
+    .why-section { margin: 76px auto 74px; }
+    .why-intro { margin: 12px 0 27px; max-width: 780px; color: var(--muted); font-size: 13px; line-height: 1.9; }
+    .prompt-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+    .prompt-card { border: 1px solid var(--line); border-radius: 17px; background: rgba(20,32,52,.75); padding: 22px; }
+    .prompt-card .prompt-index { color: #73ccce; font-size: 11px; font-weight: 800; letter-spacing: .08em; }
+    .prompt-card h3 { font-size: 14px; margin: 9px 0 5px; }
+    .prompt-card p { color: var(--muted); margin: 0; font-size: 12px; line-height: 1.85; }
+    .callout { margin-top: 19px; padding: 16px 19px; display: flex; gap: 13px; align-items: start; background: rgba(45,73,98,.17); border: 1px solid rgba(132,180,205,.14); border-radius: 15px; }
+    .callout .callout-symbol { flex: 0 0 26px; display: grid; place-items: center; border-radius: 50%; background: #244e65; color: #a7e9f1; font-size: 14px; font-weight: 850; }
+    .callout p { margin: 0; font-size: 12px; color: #b9cce0; line-height: 1.85; }
+    footer { padding: 23px 0 36px; border-top: 1px solid var(--line); color: var(--dim); font-size: 11px; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .footer-inner p { margin: 0; }
+    .footer-inner a { color: #b5d5ef; text-underline-offset: 3px; }
+    .drawer-scrim { position: fixed; inset: 0; background: rgba(3,8,18,.75); backdrop-filter: blur(5px); opacity: 0; pointer-events: none; transition: opacity .24s; z-index: 20; }
+    .drawer-scrim.is-open { opacity: 1; pointer-events: auto; }
+    .drawer { --drawer-accent: var(--accent-ac); position: fixed; top: 0; bottom: 0; right: 0; z-index: 21; width: min(560px, 100vw); max-width: 100%; transform: translateX(102%); transition: transform .3s cubic-bezier(.2,.72,.2,1); background: #101b2e; border-left: 1px solid rgba(182,200,228,.25); box-shadow: -30px 0 90px rgba(0,0,0,.34); display: flex; flex-direction: column; }
+    .drawer.is-open { transform: translateX(0); }
+    .drawer[data-quad="AC"] { --drawer-accent: var(--accent-ac); }
+    .drawer[data-quad="AD"] { --drawer-accent: var(--accent-ad); }
+    .drawer[data-quad="BC"] { --drawer-accent: var(--accent-bc); }
+    .drawer[data-quad="BD"] { --drawer-accent: var(--accent-bd); }
+    .drawer-top { padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); }
+    .drawer-top-label { color: #b5c5d7; font-size: 11px; letter-spacing: .11em; font-weight: 800; }
+    .drawer-close { width: 38px; height: 38px; display: grid; place-items: center; background: #26354d; color: #e9f3ff; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; font-size: 19px; }
+    .drawer-close:hover { background: #334766; }
+    .drawer-scroll { overflow-y: auto; overscroll-behavior: contain; min-height: 0; padding: 31px 30px 45px; }
+    .drawer-eyebrow { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 11px; color: #c0d1e7; margin-bottom: 18px; }
+    .drawer-topic-id { color: #092039; background: var(--drawer-accent); border-radius: 10px; padding: 4px 9px; font-size: 13px; font-weight: 900; font-variant-numeric: tabular-nums; }
+    .drawer-topic-quad { color: var(--drawer-accent); font-weight: 700; }
+    .drawer h2 { margin: 0 0 18px; font-size: clamp(23px, 2.6vw, 31px); line-height: 1.43; letter-spacing: -.035em; }
+    .drawer-summary { color: #c8d5e6; font-size: 14px; line-height: 2; margin: 0; }
+    .drawer-divider { height: 1px; background: var(--line); margin: 26px 0; }
+    .drawer-block { margin-bottom: 24px; }
+    .drawer-block h3 { margin: 0 0 12px; font-size: 13px; color: #f3f8ff; display: flex; align-items: center; gap: 9px; }
+    .drawer-block h3::before { content:""; height: 12px; width: 3px; border-radius: 2px; background: var(--drawer-accent); }
+    .drawer-block p { color: #b5c7db; margin: 0; font-size: 13px; line-height: 1.9; }
+    .deliverable { padding: 17px 18px; background: linear-gradient(130deg, color-mix(in srgb, var(--drawer-accent), transparent 92%), #17263a); border: 1px solid rgba(190,210,235,.16); border-radius: 14px; }
+    .discussion-list { margin: 0; padding-left: 21px; color: #b6c8dc; font-size: 13px; line-height: 1.9; }
+    .discussion-list li + li { margin-top: 8px; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag { border: 1px solid rgba(184,204,232,.17); background: #22314a; border-radius: 999px; padding: 6px 11px; font-size: 11px; color: #c8d9ed; }
+    .drawer-bottom { padding: 15px 28px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 9px; background: #101b2e; }
+    .icon-button, .share-button { border: 1px solid var(--line-strong); color: #eef5ff; background: #273851; cursor: pointer; height: 43px; border-radius: 11px; }
+    .icon-button { width: 43px; flex: 0 0 43px; font-size: 17px; }
+    .icon-button:hover, .share-button:hover { background: #344b6b; }
+    .share-button { padding-inline: 15px; flex: 1; font-size: 12px; font-weight: 700; }
+    .drawer-position { color: var(--dim); font-size: 11px; margin: 0 3px 0 auto; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    body.drawer-open { overflow: hidden; }
+    .toast { position: fixed; left: 50%; bottom: 30px; transform: translate(-50%, 18px); border: 1px solid rgba(172,226,211,.4); border-radius: 12px; background: #1b453f; color: #eafff9; padding: 12px 20px; font-size: 12px; box-shadow: 0 16px 40px rgba(0,0,0,.3); opacity: 0; pointer-events: none; transition: opacity .17s, transform .17s; z-index: 40; max-width: calc(100vw - 30px); text-align: center; }
+    .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+    .noscript-note { color: #ffdfa8; }
+    @media(max-width: 1170px){
+      .container { width: min(1330px,calc(100% - 40px)); }
+      .matrix-grid { grid-template-columns: 124px minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+      .quadrant { padding: 15px; }
+      .topics-grid { gap: 8px; }
+      .topic-tile { padding: 12px; }
+    }
+    @media(max-width: 880px){
+      .matrix-grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); grid-template-rows: auto; gap: 12px; }
+      .corner-label,.column-label { display:none; }
+      .row-label { min-height: auto; grid-column: 1/-1; flex-direction: row; align-items: center; justify-content: start; padding: 13px 17px; gap: 13px; }
+      .row-label .axis-code { width: 42px; height: 42px; flex: 0 0 42px; font-size: 20px; border-radius: 12px; }
+      .row-label strong { max-width: 100%; }
+      .row-label p { margin-left:auto; }
+      .mobile-column-tag { display:inline; font-size: 11px; margin-bottom: 2px; color: var(--quad); font-weight: 800; }
+      .topics-grid { grid-template-columns: 1fr; }
+      .topic-tile { min-height: 76px; flex-direction: row; align-items: center; gap: 10px; }
+      .topic-tile .tile-number { min-width: 27px; }
+      .topic-tile .tile-arrow { margin-top: 0; }
+    }
+    @media(max-width: 590px){
+      .container { width: calc(100% - 28px); }
+      .header-inner { min-height: 68px; }
+      .brand-mark { height: 38px; width: 38px; }
+      .brand-copy strong { font-size: 12px; }
+      .brand-copy small { font-size: 9px; }
+      .header-link { display:none; }
+      .draft-tag { font-size: 9px; padding: 5px 9px; }
+      .hero { padding: 58px 0 38px; }
+      h1 { font-size: clamp(30px,8.4vw,43px); }
+      .hero-description { font-size: 13px; }
+      .hero-footer { margin-top: 20px; }
+      .hero-pill { padding: 7px 11px; font-size: 10px; }
+      .section-heading { display: block; }
+      .section-note { margin-top: 10px; text-align:left; }
+      .toolbox { gap: 13px; padding: 10px; }
+      .filters { gap: 3px; }
+      .filter-button { font-size: 11px; padding: 7px 10px; }
+      .search { flex: 1 1 100%; }
+      .matrix-caption { align-items: start; }
+      .matrix-grid { grid-template-columns: 1fr; gap: 10px; }
+      .row-label { grid-column: auto; }
+      .row-label p { font-size: 10px; }
+      .quadrant { padding: 16px; }
+      .topics-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+      .topic-tile { min-height: 101px; padding: 12px; display: flex; flex-direction: column; align-items: start; }
+      .topic-tile .tile-label { font-size: 12px; }
+      .topic-tile .tile-arrow { margin-top: auto; }
+      .prompt-grid { grid-template-columns: 1fr; gap: 10px; }
+      .prompt-card { padding: 19px; }
+      .why-section { margin: 56px auto 54px; }
+      .drawer { width: 100%; border-left: none; }
+      .drawer-scroll { padding: 26px 22px 38px; }
+      .drawer-top,.drawer-bottom { padding-left: 20px; padding-right: 20px; }
+      .drawer-summary { font-size: 13px; }
+      .drawer-position { display:none; }
+      .drawer h2 { font-size: 24px; }
+      .footer-inner { align-items: start; }
+    }
+    @media(max-width: 360px){
+      .topics-grid { grid-template-columns: 1fr; }
+      .topic-tile { min-height: 70px; flex-direction: row; align-items: center; }
+      .topic-tile .tile-arrow { margin: 0 0 0 auto; }
+    }
+    @media(prefers-reduced-motion: reduce){
+      *,*::before,*::after { scroll-behavior:auto!important; transition-duration:.01ms!important; animation-duration:.01ms!important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="ページの先頭へ">
+        <span class="brand-mark">AI</span>
+        <span class="brand-copy">
+          <strong>AI時代のトラスト＆セキュリティ</strong>
+          <small>GROUP WORK THEME EXPLORER</small>
+        </span>
+      </a>
+      <div class="header-right">
+        <a class="header-link" href="#how-to">グループワークの進め方 ↓</a>
+        <span class="draft-tag">DRAFT · テーマ候補集</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero container" aria-labelledby="main-title">
+      <div class="eyebrow">Trust & Security / 2026 Fall</div>
+      <h1 id="main-title">32の問いから、<br><span class="thin">次の研究が始まる。</span></h1>
+      <p class="hero-description">AIでセキュリティを守る。AIと共生する社会を守る。<br>「技術」と「制度・運用・政策」の2つの切り口から、グループワークのテーマ候補を一覧できます。気になる番号を押すと、背景・成果物・議論のヒントが開きます。</p>
+      <div class="hero-footer" aria-label="テーマの内訳">
+        <span class="hero-pill"><span class="small-dot"></span> 全 <strong>32</strong> テーマ</span>
+        <span class="hero-pill"><strong>4</strong> 象限</span>
+        <span class="hero-pill">各象限 <strong>8</strong> テーマ</span>
+        <span class="hero-pill">テーマは自由に変更・発展OK</span>
+      </div>
+    </section>
+
+    <section class="container" id="matrix" aria-labelledby="matrix-title">
+      <div class="section-heading">
+        <div><div class="kicker">THEME MATRIX / 2 × 2</div><h2 id="matrix-title">テーマ・マトリクス</h2></div>
+        <p class="section-note">縦軸：何を主に守るか　／　横軸：どうアプローチするか。<br>番号をクリックすると右側に詳細が表示されます。</p>
+      </div>
+      <div class="toolbox">
+        <div class="filters" role="group" aria-label="テーマを絞り込む">
+          <button type="button" class="filter-button" data-filter="all" aria-pressed="true">すべて</button>
+          <button type="button" class="filter-button" data-filter="A" aria-pressed="false">A · AIで守る</button>
+          <button type="button" class="filter-button" data-filter="B" aria-pressed="false">B · AIとの共生</button>
+          <button type="button" class="filter-button" data-filter="C" aria-pressed="false">C · 技術</button>
+          <button type="button" class="filter-button" data-filter="D" aria-pressed="false">D · 制度・政策</button>
+        </div>
+        <label class="search" for="search-input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="7.3"/><path d="m16.2 16.2 5 5"/></svg>
+          <input id="search-input" type="search" placeholder="テーマ・キーワードで検索" autocomplete="off" aria-label="テーマを検索">
+        </label>
+      </div>
+      <div class="matrix-caption">
+        <p>※ 分類は主たる着眼点によるもの。技術・制度を横断して考えることを推奨します。</p>
+        <div class="result-counter" id="result-counter" aria-live="polite"><strong>32</strong> / 32 件</div>
+      </div>
+      <div class="matrix-grid" aria-label="4象限のテーマ一覧">
+        <div class="corner-label">縦軸 A / B<br>×<br>横軸 C / D</div>
+        <div class="column-label"><span class="axis-code">C</span><span><strong>技術</strong><small>実装・実験・検証・設計</small></span></div>
+        <div class="column-label"><span class="axis-code">D</span><span><strong>制度・運用・政策</strong><small>社会実装・法・経済・責任</small></span></div>
+
+        <div class="row-label row-A"><span class="axis-code">A</span><strong>AIで守る<br>セキュリティ</strong><p>AIを防御側の力に</p></div>
+        <section class="quadrant" data-quad="AC" aria-labelledby="head-AC">
+          <div class="quadrant-heading"><div><small>A × C · TECH</small><h3 id="head-AC">AIで守る × 技術</h3><span class="mobile-column-tag">C｜技術</span></div><span class="quadrant-count" id="count-AC">8 / 8</span></div>
+          <div class="topics-grid" id="topics-AC"></div>
+        </section>
+        <section class="quadrant" data-quad="AD" aria-labelledby="head-AD">
+          <div class="quadrant-heading"><div><small>A × D · POLICY</small><h3 id="head-AD">AIで守る × 制度・運用・政策</h3><span class="mobile-column-tag">D｜制度・運用・政策</span></div><span class="quadrant-count" id="count-AD">8 / 8</span></div>
+          <div class="topics-grid" id="topics-AD"></div>
+        </section>
+
+        <div class="row-label row-B"><span class="axis-code">B</span><strong>AIとの共生に求められる<br>セキュリティ</strong><p>AIを安全な行為主体に</p></div>
+        <section class="quadrant" data-quad="BC" aria-labelledby="head-BC">
+          <div class="quadrant-heading"><div><small>B × C · TECH</small><h3 id="head-BC">AIとの共生 × 技術</h3><span class="mobile-column-tag">C｜技術</span></div><span class="quadrant-count" id="count-BC">8 / 8</span></div>
+          <div class="topics-grid" id="topics-BC"></div>
+        </section>
+        <section class="quadrant" data-quad="BD" aria-labelledby="head-BD">
+          <div class="quadrant-heading"><div><small>B × D · POLICY</small><h3 id="head-BD">AIとの共生 × 制度・運用・政策</h3><span class="mobile-column-tag">D｜制度・運用・政策</span></div><span class="quadrant-count" id="count-BD">8 / 8</span></div>
+          <div class="topics-grid" id="topics-BD"></div>
+        </section>
+      </div>
+      <noscript><p class="noscript-note">テーマを表示するにはJavaScriptを有効にしてください。</p></noscript>
+    </section>
+
+    <section class="container why-section" id="how-to" aria-labelledby="howto-title">
+      <div class="kicker">GET STARTED</div>
+      <h2 id="howto-title">テーマを選ぶだけで、終わらせない。</h2>
+      <p class="why-intro">このサイトはSA・教員によるアイデアのたたき台です。学生がテーマ名、研究対象、アプローチを変更して構いません。各グループには、最終的に次の3点を意識した提案を期待します。</p>
+      <div class="prompt-grid">
+        <article class="prompt-card"><span class="prompt-index">01 / WHAT</span><h3>何を守るか？</h3><p>守るべき情報資産・権利・機能を定義し、誰がどんな脅威をもたらすのかを具体化する。</p></article>
+        <article class="prompt-card"><span class="prompt-index">02 / HOW</span><h3>どう守るか？</h3><p>技術だけでなく、権限、運用、法律、経済的な仕組みまで含めて設計する。</p></article>
+        <article class="prompt-card"><span class="prompt-index">03 / EVIDENCE</span><h3>なぜ有効だといえるか？</h3><p>先行研究と比較し、実験・事例分析・制度評価などで成立条件と限界を示す。</p></article>
+      </div>
+      <div class="callout"><span class="callout-symbol">i</span><p>リーダー未定でも、まずは興味のあるテーマから集まることを想定しています。テーマの統合・分割・独自提案も歓迎。実験を行う場合は、模擬環境や事前許可された環境で実施してください。</p></div>
+    </section>
+  </main>
+
+  <footer><div class="container footer-inner"><p>AI時代のトラスト＆セキュリティ ｜ グループワーク・テーマ候補（非公式ドラフト）</p><p>資料・講義を出発点にしたアイデア案です。内容は検討・更新を前提とします。 <a href="#top">ページの先頭へ ↑</a></p></div></footer>
+
+  <div class="drawer-scrim" id="drawer-scrim" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="drawer-title" tabindex="-1">
+    <div class="drawer-top"><span class="drawer-top-label">THEME DETAILS / 研究テーマ詳細</span><button class="drawer-close" id="drawer-close" type="button" aria-label="詳細を閉じる">×</button></div>
+    <div class="drawer-scroll" id="drawer-scroll">
+      <div class="drawer-eyebrow"><span class="drawer-topic-id" id="drawer-number">01</span><span class="drawer-topic-quad" id="drawer-quadrant">A × C</span><span id="drawer-kind">AIで守る × 技術</span></div>
+      <h2 id="drawer-title"></h2>
+      <p class="drawer-summary" id="drawer-summary"></p>
+      <div class="drawer-divider"></div>
+      <section class="drawer-block"><h3>成果物のイメージ</h3><div class="deliverable"><p id="drawer-deliverable"></p></div></section>
+      <section class="drawer-block"><h3>グループで議論したい問い</h3><ol class="discussion-list" id="drawer-questions"></ol></section>
+      <section class="drawer-block"><h3>関連キーワード</h3><div class="tag-list" id="drawer-tags"></div></section>
+      <div class="callout"><span class="callout-symbol">↗</span><p>ここにある内容は最初のたたき台です。興味に合わせてスコープを絞る、別テーマと組み合わせる、成果物を変える、といった発展ができます。</p></div>
+    </div>
+    <div class="drawer-bottom">
+      <button class="icon-button" id="prev-topic" type="button" aria-label="前のテーマ">←</button>
+      <button class="icon-button" id="next-topic" type="button" aria-label="次のテーマ">→</button>
+      <span class="drawer-position" id="drawer-position">1 / 32</span>
+      <button class="share-button" id="copy-topic-link" type="button">🔗 このテーマのリンクをコピー</button>
+    </div>
+  </aside>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="application/json" id="topics-data">[
+  {
+    "id": 1,
+    "quadrant": "AC",
+    "short": "小さな脆弱性が大事故の入口？",
+    "title": "「深刻度が低い脆弱性」が、会社全体を乗っ取る入口になる？",
+    "summary": "CVSSの数値だけでなく、EPSS、KEV、システム間の接続、攻撃チェーンをAIで解析し、脆弱性対応の優先順位を導く。小さな情報漏えいが、後続の認証突破や権限昇格を助ける条件にも注目する。",
+    "deliverable": "架空の企業ネットワークに対する攻撃グラフと優先順位付けシステム。従来のCVSS順との比較実験。",
+    "questions": [
+      "脆弱性単体の深刻度と、攻撃チェーン全体の危険度はどこで食い違うか？",
+      "AIの予測が外れたとき、どの情報資産がどれだけ危険になるか？"
+    ],
+    "tags": [
+      "CVSS",
+      "EPSS / KEV",
+      "攻撃チェーン"
+    ]
+  },
+  {
+    "id": 2,
+    "quadrant": "AC",
+    "short": "AIが作ったパッチは安全？",
+    "title": "AIが発見し、AIが修正する。人間がパッチを確認しなくても安全？",
+    "summary": "LLMに既知の脆弱性を修正させ、Fuzzing・回帰テスト・静的解析で修正の正しさを評価する。防御AIが新たな脆弱性を作るリスクも扱う。",
+    "deliverable": "AI生成パッチの成功率・副作用・検証コストの比較。AIxCC／OSS-CRSなどを先行事例として調査。",
+    "questions": [
+      "テストが通っただけで「安全に修正できた」と言ってよいか？",
+      "修正の自動適用を許せる条件は、重要システムごとにどう変わるか？"
+    ],
+    "tags": [
+      "AIxCC",
+      "自動修復",
+      "Fuzzing"
+    ]
+  },
+  {
+    "id": 3,
+    "quadrant": "AC",
+    "short": "電話番号変更から乗っ取り？",
+    "title": "ログイン画面は鉄壁なのに、電話番号の変更から乗っ取られる？",
+    "summary": "登録、ログイン、本人確認、電話番号変更、アカウント回復の間にある「セキュリティの継ぎ目」をAIで探索する。通常機能の組み合わせが攻撃チェーンになる条件を調べる。",
+    "deliverable": "模擬Webサービスの状態遷移モデルと、AIによる認証・認可の抜け漏れ検出デモ。",
+    "questions": [
+      "厳格なログイン認証が、緩いアカウント回復手続きによって無効化される条件は？",
+      "状態遷移をどう表現すると、AIが「継ぎ目」を発見しやすいか？"
+    ],
+    "tags": [
+      "認証・認可",
+      "状態遷移",
+      "攻撃チェーン"
+    ]
+  },
+  {
+    "id": 4,
+    "quadrant": "AC",
+    "short": "1回限定クーポンを100回？",
+    "title": "「1人1回限定クーポン」をAIで100回使う人を見抜けるか？",
+    "summary": "システムをハッキングしなくても、サービスの正規機能を悪用する不正が存在する。生成AIによる自動化・大量利用を、行動分析AIで防げるか検証する。",
+    "deliverable": "模擬ECサービスと取引ログを作り、ルールベース検知と機械学習による不正検知を比較。",
+    "questions": [
+      "不正なクーポン利用と、正当な大量利用をどう区別するか？",
+      "検知を厳しくした場合、普通のユーザーにどんな不利益が出るか？"
+    ],
+    "tags": [
+      "Business Logic",
+      "不正検知",
+      "EC"
+    ]
+  },
+  {
+    "id": 5,
+    "quadrant": "AC",
+    "short": "AIはAIの詐欺メールを見抜ける？",
+    "title": "AIが書いた「完璧な日本語の詐欺メール」をAIは見抜ける？",
+    "summary": "メールの文章ではなく、送信経路・認証結果・URLの特徴などを組み合わせる。LLMによる文章判定と、SPF/DKIM/DMARCなどを利用した検知を比較する。",
+    "deliverable": "フィッシング検出器と、正規メールの誤検知率・詐欺メールの見逃し率の分析。",
+    "questions": [
+      "文章の自然さが判定材料にならないとき、何が信頼できる根拠か？",
+      "メール認証を通過する悪用には、どの防御層が必要か？"
+    ],
+    "tags": [
+      "フィッシング",
+      "SPF / DKIM",
+      "メール認証"
+    ]
+  },
+  {
+    "id": 6,
+    "quadrant": "AC",
+    "short": "攻撃を1分以内に止めるAI",
+    "title": "サイバー攻撃が始まってから1分以内に止めるAIは作れるか？",
+    "summary": "異なるログから攻撃の各段階を相関分析し、侵害の兆候を早期に発見する。AIが誤って正常な業務を止めてしまう場合も評価する。",
+    "deliverable": "模擬SOCのデモと、検知時間・精度・誤遮断率の比較。",
+    "questions": [
+      "早期遮断と誤遮断のトレードオフをどんな指標で測るか？",
+      "人間が承認する必要がある操作と、AIが自動実行できる操作は？"
+    ],
+    "tags": [
+      "SOC",
+      "ログ分析",
+      "自律防御"
+    ]
+  },
+  {
+    "id": 7,
+    "quadrant": "AC",
+    "short": "ログイン済み攻撃者を見抜く",
+    "title": "正規アカウントでログインした攻撃者を、OSの動きから見抜く",
+    "summary": "認証成功後でも、不自然なファイルアクセスやプロセス生成をeBPFなどで観測し、AIで異常を判定する。認証の成功と行為の正当性を切り離して考える。",
+    "deliverable": "Linuxの実行ログを用いた異常検知プロトタイプと、正常操作・不正操作の比較。",
+    "questions": [
+      "利用者が正規の権限を持つとき、どこからが危険な行為なのか？",
+      "監視に必要なログと、不要なプライベート情報を分離できるか？"
+    ],
+    "tags": [
+      "eBPF",
+      "エンドポイント",
+      "内部不正"
+    ]
+  },
+  {
+    "id": 8,
+    "quadrant": "AC",
+    "short": "自宅のカメラをAIで守る",
+    "title": "自宅のネットワークカメラが乗っ取られる前に、AIが異常を見抜く",
+    "summary": "IoTデバイスの通信や動作をローカルAIで監視し、クラウドにプライベートデータを送らずに攻撃を検知できるか検証する。",
+    "deliverable": "小型デバイス上の異常検知デモ。検知精度・消費電力・プライバシーのトレードオフ分析。",
+    "questions": [
+      "通常と異常の境界が変わる家庭環境で、誤検知をどう減らすか？",
+      "通信内容を見ずに攻撃兆候を捉えられるか？"
+    ],
+    "tags": [
+      "IoT",
+      "Edge AI",
+      "プライバシー"
+    ]
+  },
+  {
+    "id": 9,
+    "quadrant": "AD",
+    "short": "中小企業にバグバウンティを",
+    "title": "中小企業もハッカーに守ってもらえる社会を作れるか？",
+    "summary": "大企業中心のバグバウンティを、中小企業や自治体でも導入できる制度を考案する。調査対象の範囲、事前許可、発見者の保護、報奨金、公的補助などを検討する。",
+    "deliverable": "日本の既存の脆弱性届出制度を踏まえた、AI時代の公的支援型バグバウンティ制度案。",
+    "questions": [
+      "中小企業が参加しにくい本当の理由は費用、法的リスク、それとも運用負担か？",
+      "研究者・企業・第三者調整機関の責任をどう分担するか？"
+    ],
+    "tags": [
+      "バグバウンティ",
+      "CVD",
+      "中小企業支援"
+    ]
+  },
+  {
+    "id": 10,
+    "quadrant": "AD",
+    "short": "AIに緊急停止権限を与える？",
+    "title": "AIに「会社のシステムを緊急停止する権限」を与えてよいか？",
+    "summary": "防御AIが攻撃を発見しても、人間の承認を待てば被害が広がるかもしれない。一方、誤検知による停止も重大な損失を生む。",
+    "deliverable": "自動停止・人間承認・事後監査を組み合わせた権限分界モデル。シナリオ別の意思決定シミュレーション。",
+    "questions": [
+      "自動停止できる被害と、人間の承認が必要な被害は何が違うか？",
+      "停止判断の誤りに誰が責任を持ち、どう復旧するか？"
+    ],
+    "tags": [
+      "緊急停止",
+      "ガバナンス",
+      "責任分界"
+    ]
+  },
+  {
+    "id": 11,
+    "quadrant": "AD",
+    "short": "通信の秘密とAIによる監視",
+    "title": "国民のプライバシーを守りながら、AIでサイバー犯罪を監視できるか？",
+    "summary": "通信の秘密を尊重しながら、詐欺や攻撃の検知に必要な情報をどこまで取得・共有できるのか。技術的なデータ最小化と法制度を組み合わせる。",
+    "deliverable": "通信内容、メタデータ、匿名化情報ごとに扱いを整理した官民連携・情報共有アーキテクチャ案。",
+    "questions": [
+      "監視の目的が正当でも、収集する情報の範囲は正当化されるか？",
+      "AI分析に必要なデータだけを取得する運用は可能か？"
+    ],
+    "tags": [
+      "通信の秘密",
+      "プライバシー",
+      "官民連携"
+    ]
+  },
+  {
+    "id": 12,
+    "quadrant": "AD",
+    "short": "AIセキュリティ格差をなくす",
+    "title": "大企業だけがAIで守られる「セキュリティ格差」をどうなくす？",
+    "summary": "中小企業が自社で高度な防御AIやSOCを運用するのは難しい。共同利用、公共サービス化、補助金、業界団体による運営などを比較する。",
+    "deliverable": "中小企業向け共同AI-SOCの事業・運用モデルと、費用対効果の試算。",
+    "questions": [
+      "共同監視では企業間でどのデータを共有できるか？",
+      "サブスクリプションと公的補助のどちらが持続可能か？"
+    ],
+    "tags": [
+      "AI-SOC",
+      "公共政策",
+      "経済性"
+    ]
+  },
+  {
+    "id": 13,
+    "quadrant": "AD",
+    "short": "防御予算100万円の使い方",
+    "title": "防御予算が100万円しかなければ、どの脆弱性を直すべき？",
+    "summary": "技術的な深刻度だけでなく、攻撃される確率、情報資産の価値、復旧コストなどを踏まえて、AIが修正優先順位を提案する。",
+    "deliverable": "仮想企業の限られた予算を使ったリスク最小化ゲームと、AI提案・人間判断の比較。",
+    "questions": [
+      "「最も危険な脆弱性」を直すことが必ずしも最適でないのはなぜか？",
+      "資産価値の評価が主観的な場合、意思決定の透明性をどう担保するか？"
+    ],
+    "tags": [
+      "リスク経営",
+      "投資対効果",
+      "優先順位"
+    ]
+  },
+  {
+    "id": 14,
+    "quadrant": "AD",
+    "short": "ゼロデイはいつ公開する？",
+    "title": "AIが世界中のゼロデイを発見したら、誰に、いつ教えるべき？",
+    "summary": "AIによる脆弱性発見が大規模化すると、修正前の情報公開が攻撃を助ける可能性もある。研究者、ベンダー、政府、利用者の利害を比較する。",
+    "deliverable": "AI発見脆弱性の報告・修正・公表に関する新しい協調的開示（CVD）フレームワーク。",
+    "questions": [
+      "大量発見によってCVDの調整能力が限界に達したら何を優先するか？",
+      "公開遅延と秘密保持は、誰の利益・不利益になるか？"
+    ],
+    "tags": [
+      "ゼロデイ",
+      "CVD",
+      "情報公開"
+    ]
+  },
+  {
+    "id": 15,
+    "quadrant": "AD",
+    "short": "AI誤検知で口座凍結されたら",
+    "title": "AIの誤検知で銀行口座を凍結されたら、誰が救済してくれる？",
+    "summary": "不正送金対策のAIが正規の利用者を不審と判断した場合、資産やサービスへのアクセスが失われる。AIによる安全性の向上と、利用者の権利を両立させる。",
+    "deliverable": "誤検知時の異議申立て・再審査・補償制度と、被害を最小化する運用フロー。",
+    "questions": [
+      "不正対策の有効性と、誤って排除される利用者の不利益をどう比較するか？",
+      "救済までに要する時間を制度的な評価指標にできるか？"
+    ],
+    "tags": [
+      "誤検知",
+      "金融",
+      "利用者救済"
+    ]
+  },
+  {
+    "id": 16,
+    "quadrant": "AD",
+    "short": "「AIが安全」の根拠とは？",
+    "title": "「AIが安全だと言った」を安全性の証拠にしてよいのか？",
+    "summary": "AIによるコード検査やパッチ適用の結果を、企業はどの程度信用できるのか。AIの出力を人間が再検証する要件、独立監査、認証制度を検討する。",
+    "deliverable": "防御AIの調達・運用・監査に関する保証（Assurance）フレームワークと評価基準。",
+    "questions": [
+      "AI検査を信頼するために必要な証拠は何か？",
+      "評価者と開発者が同じとき、独立した監査をどう担保するか？"
+    ],
+    "tags": [
+      "Assurance",
+      "監査",
+      "AIガバナンス"
+    ]
+  },
+  {
+    "id": 17,
+    "quadrant": "BC",
+    "short": "パスキーを渡さずAIに買い物委任",
+    "title": "自分のパスキーをAIに渡さずに、買い物を全部任せられるか？",
+    "summary": "AIエージェントに本人の認証情報そのものを渡すのではなく、利用目的・金額・期限を限定した権限を委任する。パスキー、VC、署名付きMandateを組み合わせる。",
+    "deliverable": "権限委任のプロトタイプ。期限切れ・権限超過・取消し後のアクセスが拒否されることを検証。",
+    "questions": [
+      "「本人が承認した」と「AIの行為が本人の意図に合う」はどう違うか？",
+      "取消しがリアルタイムに伝わらない場合に、何が起こるか？"
+    ],
+    "tags": [
+      "Passkeys",
+      "VC",
+      "権限委任"
+    ]
+  },
+  {
+    "id": 18,
+    "quadrant": "BC",
+    "short": "Webページの一文でAIが暴走？",
+    "title": "Webページに書かれた一文で、AIに社内メールを盗ませることはできるか？",
+    "summary": "間接的Prompt Injectionによって、外部のWebページや文書の内容がAIへの命令として扱われてしまう問題を検証する。",
+    "deliverable": "模擬AIエージェントを使った攻撃・防御デモ。指示階層、入力分離、ツール実行時の認可チェックを比較。",
+    "questions": [
+      "Webページの記述とユーザーの命令を、どの信頼境界で分離すべきか？",
+      "LLMが騙されても、ツール側の認可で被害を止められるか？"
+    ],
+    "tags": [
+      "Prompt Injection",
+      "信頼境界",
+      "ツール実行"
+    ]
+  },
+  {
+    "id": 19,
+    "quadrant": "BC",
+    "short": "MCP連携で権限が増える？",
+    "title": "AIの道具をつなげると、なぜ勝手に権限が増えるのか？",
+    "summary": "MCPなどで複数のツールを連携させると、単体では無害だった権限が組み合わされ、想定外の操作が可能になることがある。Confused Deputyや権限継承を検討する。",
+    "deliverable": "複数ツールの権限モデルと、許可されないツール連携を阻止する認可ゲートの試作。",
+    "questions": [
+      "ツールごとの認可が適切でも、組み合わせると危険になる条件は？",
+      "委任された権限を下位ツールへそのまま引き継いでよいか？"
+    ],
+    "tags": [
+      "MCP",
+      "Confused Deputy",
+      "最小権限"
+    ]
+  },
+  {
+    "id": 20,
+    "quadrant": "BC",
+    "short": "1,000円の承認が10,000円に？",
+    "title": "「1,000円の買い物」を承認したのに、支払時に10,000円になっていたら？",
+    "summary": "人間が承認した時点と、AIが購入を実行する時点で、価格や商品、販売者が変わるTOCTOU問題を検証する。",
+    "deliverable": "模擬決済フローを使った実験。署名付きカート、再確認、動的リンクによる対策の比較。",
+    "questions": [
+      "承認内容と実行内容は、どのフィールドまで一致しているべきか？",
+      "価格変更や在庫変更など、正常な変化と攻撃をどう区別するか？"
+    ],
+    "tags": [
+      "TOCTOU",
+      "Agentic Payment",
+      "電子署名"
+    ]
+  },
+  {
+    "id": 21,
+    "quadrant": "BC",
+    "short": "証明できても人間の意図と違う？",
+    "title": "暗号学的に「本人が許可した」と証明できても、AIが勘違いしていたら？",
+    "summary": "「一番安い航空券を買って」という指示に対し、AIがキャンセル不能な航空券を購入した場合、署名された指示と人間の意図が一致していたといえるか。",
+    "deliverable": "自然言語の指示を構造化されたIntentに変換するモデルと、解釈の不一致を検出する評価手法。",
+    "questions": [
+      "「本人の意図」を技術的に表現する最小単位は何か？",
+      "一見正しい解釈が複数ある場合、誰が最終判断するか？"
+    ],
+    "tags": [
+      "Verifiable Intent",
+      "自然言語",
+      "本人の意図"
+    ]
+  },
+  {
+    "id": 22,
+    "quadrant": "BC",
+    "short": "本物のAIなら安全なのか？",
+    "title": "「このAIは本物です」を証明できれば、安全に任せられるのか？",
+    "summary": "Remote AttestationやTEEなどでAIの実行環境・コードの真正性を検証する。一方、真正なプログラムでも危険な行動を取る可能性がある。",
+    "deliverable": "実行環境の真正性と行動の正当性を分離した脅威モデル、簡易Attestation実験またはアーキテクチャ設計。",
+    "questions": [
+      "真正な実行環境を確認できても、何が保証されないか？",
+      "モデル更新後にも、同じ権限・信頼を与えてよいか？"
+    ],
+    "tags": [
+      "Remote Attestation",
+      "TEE",
+      "真正性"
+    ]
+  },
+  {
+    "id": 23,
+    "quadrant": "BC",
+    "short": "「証明された安全」の落とし穴",
+    "title": "数学的に「安全」と証明されたAIプログラムが、人間を裏切る？",
+    "summary": "LeanやModel Checkingでプログラムの性質を証明しても、仕様そのものが人間の意図と違えば問題は残る。仕様の正しさをどう確認するのか検討する。",
+    "deliverable": "簡単な認可システムについて「証明できるが意図に反する仕様」を作り、仕様レビューと形式的検証の限界を示す。",
+    "questions": [
+      "形式的検証は、何に対する正しさを証明しているのか？",
+      "仕様自体の誤りを発見する独立した検証手段は何か？"
+    ],
+    "tags": [
+      "Lean",
+      "形式的検証",
+      "仕様の誤り"
+    ]
+  },
+  {
+    "id": 24,
+    "quadrant": "BC",
+    "short": "昨日のメモが今日のAIを乗っ取る",
+    "title": "昨日読ませた悪意あるメモが、今日のAIを乗っ取る？",
+    "summary": "AIエージェントの長期記憶に悪意のある指示が保存され、別の日の行動を誘導するMemory Poisoningを研究する。",
+    "deliverable": "模擬メモリを持つAIの攻撃実験と、情報源の記録・隔離・再検証・有効期限による対策比較。",
+    "questions": [
+      "過去の外部データが、なぜ現在の命令として扱われてしまうのか？",
+      "記憶の出所と信頼度を記録すれば、攻撃を防げるか？"
+    ],
+    "tags": [
+      "Memory Poisoning",
+      "長期記憶",
+      "データ来歴"
+    ]
+  },
+  {
+    "id": 25,
+    "quadrant": "BD",
+    "short": "AIが100万円買った責任は誰？",
+    "title": "AIが勝手に100万円の買い物をした。誰がお金を払う？",
+    "summary": "利用者がAIに権限を与えていた場合でも、本人の意図と違う購入が生じる可能性がある。利用者、AI提供者、加盟店、決済事業者の責任分担を設計する。",
+    "deliverable": "Agentic Paymentの責任分界モデルと、複数の紛争事例に適用する判断フローチャート。",
+    "questions": [
+      "正しい認証と、正しい取引の証拠は同じか？",
+      "利用者・AI開発者・加盟店のうち、誰がどんな証拠を保存すべきか？"
+    ],
+    "tags": [
+      "Accountability",
+      "決済",
+      "責任分界"
+    ]
+  },
+  {
+    "id": 26,
+    "quadrant": "BD",
+    "short": "AIの権限をいつでも取り消せる？",
+    "title": "AIに一度権限を与えたら、いつでも取り消せるべき？",
+    "summary": "自律エージェントが24時間活動する社会で、委任を取り消す権利はどう保障されるか。実行中の処理、オフラインでの権限利用、緊急停止などを考える。",
+    "deliverable": "委任・更新・取消し・停止・復旧までを対象とした利用者保護制度と運用フロー。",
+    "questions": [
+      "取消し要求の時点で進行中だった操作はどう扱うべきか？",
+      "委任先がオフラインでも実効的な停止を保証できるか？"
+    ],
+    "tags": [
+      "委任取消し",
+      "利用者権利",
+      "復旧"
+    ]
+  },
+  {
+    "id": 27,
+    "quadrant": "BD",
+    "short": "顔も声も偽れる時代の本人確認",
+    "title": "顔も声もAIで偽造できる時代、そもそも「本人」とはどう確認する？",
+    "summary": "ディープフェイクに対抗するため、公的個人認証、ICチップ、パスキーなどの利用を考える。一方で、高齢者やスマートフォンを持たない人の排除も検討する。",
+    "deliverable": "本人確認方式の安全性・利用可能性・コスト比較と、包摂性を確保する制度案。",
+    "questions": [
+      "偽造耐性が強い方式ほど利用者を排除する可能性はあるか？",
+      "例外手続きが本人確認の「継ぎ目」にならないようにできるか？"
+    ],
+    "tags": [
+      "本人確認",
+      "ディープフェイク",
+      "デジタル包摂"
+    ]
+  },
+  {
+    "id": 28,
+    "quadrant": "BD",
+    "short": "AIボットとSNSの匿名性",
+    "title": "AIボットによる世論操作を防ぐため、SNSの匿名性を犠牲にしてよいか？",
+    "summary": "AIが大量のアカウントを使って意見を投稿する時代に、Bot識別、本人確認、匿名で発言する権利をどう両立させるか。",
+    "deliverable": "SNSのAI表示・Bot認証・匿名性保護を組み合わせた政策モデルと、表現の自由への影響評価。",
+    "questions": [
+      "Botであることの表示と、実名であることの証明は別に設計できるか？",
+      "匿名性を弱めることで、誰が発言しにくくなるか？"
+    ],
+    "tags": [
+      "SNS",
+      "匿名性",
+      "民主主義"
+    ]
+  },
+  {
+    "id": 29,
+    "quadrant": "BD",
+    "short": "行政AIの判断に異議申立て",
+    "title": "AIが行政の給付金申請を却下したら、誰に異議を申し立てる？",
+    "summary": "行政サービスにAIを導入した際、判断理由の説明、誤判定の訂正、最終的な責任者の明確化が必要になる。迅速化と適正手続を両立させる。",
+    "deliverable": "公共サービス向けAI利用ガバナンス案。人間による再審査、監査証跡、透明性の要件を設計。",
+    "questions": [
+      "AIの推奨を職員が採用した場合、責任は誰が負うか？",
+      "利用者が判断を争うために、どの記録が必要か？"
+    ],
+    "tags": [
+      "行政DX",
+      "適正手続",
+      "説明責任"
+    ]
+  },
+  {
+    "id": 30,
+    "quadrant": "BD",
+    "short": "AI同僚にどこまで見せる？",
+    "title": "会社のAI同僚に、社員のメールやファイルをどこまで見せてよい？",
+    "summary": "業務効率のためのAI導入が、顧客情報や社内機密の漏えいにつながる可能性がある。職務ごとの権限、データ保持、ログ監査、シャドーAIを扱う。",
+    "deliverable": "企業向けAIエージェント利用ポリシー、権限設計と監査・インシデント対応ガイドライン。",
+    "questions": [
+      "社員には許される情報閲覧を、代理AIに同じ範囲で許すべきか？",
+      "退職・配置換え・共有設定変更はAIの権限にどう反映されるか？"
+    ],
+    "tags": [
+      "企業AI",
+      "情報漏えい",
+      "アクセス制御"
+    ]
+  },
+  {
+    "id": 31,
+    "quadrant": "BD",
+    "short": "AI音声詐欺から家族を守る",
+    "title": "「お母さんの声で助けて」と電話が来たら、どうやって家族を守る？",
+    "summary": "AI音声によるなりすましが簡単になる中、声そのものではなく、別経路確認や事前に合意した手続きで本人を確かめる仕組みを考える。",
+    "deliverable": "家庭や学校向けのディープフェイク詐欺対策プロトコル。ロールプレイによる使いやすさの評価。",
+    "questions": [
+      "緊急事態で焦っていても実行できる確認手続きとは？",
+      "家族間の合言葉やコールバックは、どんな場合に破綻するか？"
+    ],
+    "tags": [
+      "音声偽装",
+      "詐欺対策",
+      "行動デザイン"
+    ]
+  },
+  {
+    "id": 32,
+    "quadrant": "BD",
+    "short": "世界共通のデジタル委任状",
+    "title": "AIに世界共通の「デジタル委任状」を持たせることはできるか？",
+    "summary": "AP2、Verifiable Intent、DPC、VCなど、異なる技術やサービス間で権限・同意・行為の証拠を相互運用できるか考える。国際標準化やプラットフォーム間競争も論点にする。",
+    "deliverable": "既存標準の比較表と、サービスや国境を越えて利用できる委任・検証フレームワークの提案。",
+    "questions": [
+      "委任の範囲・有効期限・取消しを、異なる事業者が同じように検証できるか？",
+      "国際標準に何を含め、国ごとの制度に何を委ねるべきか？"
+    ],
+    "tags": [
+      "AP2 / DPC",
+      "国際標準",
+      "VC"
+    ]
+  }
+]</script>
+  <script>
+    (() => {
+      'use strict';
+      const topics = JSON.parse(document.getElementById('topics-data').textContent);
+      const quadrants = ['AC','AD','BC','BD'];
+      const labels = {
+        AC: 'AIで守る × 技術', AD: 'AIで守る × 制度・運用・政策',
+        BC: 'AIとの共生 × 技術', BD: 'AIとの共生 × 制度・運用・政策'
+      };
+      const searchInput = document.getElementById('search-input');
+      const resultCounter = document.getElementById('result-counter');
+      const drawer = document.getElementById('drawer');
+      const scrim = document.getElementById('drawer-scrim');
+      const drawerScroll = document.getElementById('drawer-scroll');
+      const toast = document.getElementById('toast');
+      let currentFilter = 'all';
+      let currentTopicId = null;
+      let lastTrigger = null;
+      let toastTimer;
+
+      const pad = id => String(id).padStart(2, '0');
+      const normalize = input => input.toLocaleLowerCase('ja').normalize('NFKC');
+      const keyFor = topic => normalize([topic.title, topic.short, topic.summary, topic.deliverable, ...topic.tags].join(' '));
+
+      function makeTile(topic) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'topic-tile';
+        button.dataset.topic = pad(topic.id);
+        button.setAttribute('aria-label', `テーマ${pad(topic.id)}：${topic.title}。詳細を開く`);
+        const number = document.createElement('span'); number.className = 'tile-number'; number.textContent = pad(topic.id);
+        const title = document.createElement('span'); title.className = 'tile-label'; title.textContent = topic.short;
+        const arrow = document.createElement('span'); arrow.className = 'tile-arrow'; arrow.textContent = '↗'; arrow.setAttribute('aria-hidden', 'true');
+        button.append(number, title, arrow);
+        button.addEventListener('click', () => { lastTrigger = button; openTopic(topic.id); });
+        return button;
+      }
+
+      function renderMatrix() {
+        const query = normalize(searchInput.value.trim());
+        const results = topics.filter(topic =>
+          (currentFilter === 'all' || topic.quadrant.includes(currentFilter)) &&
+          (!query || keyFor(topic).includes(query))
+        );
+        for (const quad of quadrants) {
+          const grid = document.getElementById(`topics-${quad}`);
+          const subset = results.filter(topic => topic.quadrant === quad);
+          const frag = document.createDocumentFragment();
+          subset.forEach(topic => frag.append(makeTile(topic)));
+          if (subset.length === 0) {
+            const empty = document.createElement('div'); empty.className = 'empty-quad'; empty.textContent = '該当するテーマはありません'; frag.append(empty);
+          }
+          grid.replaceChildren(frag);
+          document.getElementById(`count-${quad}`).textContent = `${subset.length} / 8`;
+        }
+        resultCounter.innerHTML = `<strong>${results.length}</strong> / 32 件`;
+      }
+
+      document.querySelectorAll('.filter-button').forEach(button => {
+        button.addEventListener('click', () => {
+          currentFilter = button.dataset.filter;
+          document.querySelectorAll('.filter-button').forEach(btn => btn.setAttribute('aria-pressed', String(btn === button)));
+          renderMatrix();
+        });
+      });
+      searchInput.addEventListener('input', renderMatrix);
+
+      function showTopic(id, options = {}) {
+        const topic = topics.find(t => t.id === Number(id));
+        if (!topic) return false;
+        const wasOpen = drawer.classList.contains('is-open');
+        currentTopicId = topic.id;
+        drawer.dataset.quad = topic.quadrant;
+        document.getElementById('drawer-number').textContent = pad(topic.id);
+        document.getElementById('drawer-quadrant').textContent = `${topic.quadrant[0]} × ${topic.quadrant[1]}`;
+        document.getElementById('drawer-kind').textContent = labels[topic.quadrant];
+        document.getElementById('drawer-title').textContent = topic.title;
+        document.getElementById('drawer-summary').textContent = topic.summary;
+        document.getElementById('drawer-deliverable').textContent = topic.deliverable;
+        const ol = document.getElementById('drawer-questions');
+        ol.replaceChildren(...topic.questions.map(q => { const li = document.createElement('li'); li.textContent = q; return li; }));
+        const tags = document.getElementById('drawer-tags');
+        tags.replaceChildren(...topic.tags.map(tag => { const span = document.createElement('span'); span.className = 'tag'; span.textContent = tag; return span; }));
+        document.getElementById('drawer-position').textContent = `${topic.id} / 32`;
+        drawerScroll.scrollTop = 0;
+        drawer.classList.add('is-open'); scrim.classList.add('is-open');
+        drawer.setAttribute('aria-hidden','false');
+        document.body.classList.add('drawer-open');
+        if (!wasOpen) document.getElementById('drawer-close').focus({preventScroll: true});
+        if (options.updateUrl !== false) {
+          const path = `${location.pathname}${location.search}#topic-${pad(topic.id)}`;
+          try {
+            if (wasOpen) history.replaceState(history.state, '', path);
+            else history.pushState({modalFromPage:true}, '', path);
+          } catch (_) { /* Some sandboxed previews cannot update browser history. */ }
+        }
+        return true;
+      }
+
+      function openTopic(id) { showTopic(id, {updateUrl:true}); }
+      function hideDrawer() {
+        if (!drawer.classList.contains('is-open')) return;
+        drawer.classList.remove('is-open'); scrim.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('drawer-open'); currentTopicId = null;
+        if (lastTrigger && lastTrigger.isConnected) lastTrigger.focus({preventScroll:true});
+      }
+      function closeTopic() {
+        if (history.state && history.state.modalFromPage) {
+          history.back();
+        } else {
+          try { history.replaceState(null, '', `${location.pathname}${location.search}`); }
+          catch (_) { /* Closing must still work in sandboxed previews. */ }
+          hideDrawer();
+        }
+      }
+      function syncFromUrl() {
+        const match = /^#topic-(\d{1,2})$/.exec(location.hash);
+        if (match && showTopic(Number(match[1]), {updateUrl:false})) return;
+        hideDrawer();
+      }
+      window.addEventListener('popstate', syncFromUrl);
+      window.addEventListener('hashchange', syncFromUrl);
+      document.getElementById('drawer-close').addEventListener('click', closeTopic);
+      scrim.addEventListener('click', closeTopic);
+      document.getElementById('prev-topic').addEventListener('click', () => openTopic(currentTopicId === 1 ? 32 : currentTopicId - 1));
+      document.getElementById('next-topic').addEventListener('click', () => openTopic(currentTopicId === 32 ? 1 : currentTopicId + 1));
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('is-visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 2400);
+      }
+      document.getElementById('copy-topic-link').addEventListener('click', async () => {
+        const url = `${location.href.split('#')[0]}#topic-${pad(currentTopicId)}`;
+        try {
+          if (!navigator.clipboard) throw new Error('Clipboard API unavailable');
+          await navigator.clipboard.writeText(url);
+          showToast('テーマのURLをコピーしました');
+        } catch (_) {
+          const input = document.createElement('textarea');
+          input.value = url; input.style.position='fixed'; input.style.opacity='0';
+          document.body.append(input); input.select();
+          const copied = document.execCommand && document.execCommand('copy');
+          input.remove();
+          if (copied) showToast('テーマのURLをコピーしました');
+          else window.prompt('こちらのURLをコピーしてください', url);
+        }
+      });
+
+      document.addEventListener('keydown', event => {
+        if (!drawer.classList.contains('is-open')) return;
+        if (event.key === 'Escape') { event.preventDefault(); closeTopic(); return; }
+        if (event.key !== 'Tab') return;
+        const focusables = [...drawer.querySelectorAll('button:not([disabled]), a[href], input:not([disabled])')];
+        if (!focusables.length) return;
+        const first = focusables[0], last = focusables[focusables.length-1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      });
+
+      renderMatrix();
+      syncFromUrl();
+    })();
+  </script>
+</body>
+</html>
