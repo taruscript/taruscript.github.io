@@ -56,13 +56,17 @@
 
   const sample = (segments, fn) => Array.from({length: segments + 1}, (_, i) => fn(i / segments));
   const grid = [];
-  for (let lat = -60; lat <= 60; lat += 30) grid.push(sample(144, t => onGlobe(t * 360, lat)));
-  for (let lon = 0; lon < 360; lon += 30) grid.push(sample(72, t => onGlobe(lon, t * 180 - 90)));
+  for (let lat = -60; lat <= 60; lat += 15) grid.push(sample(144, t => onGlobe(t * 360, lat)));
+  for (let lon = 0; lon < 360; lon += 15) grid.push(sample(72, t => onGlobe(lon, t * 180 - 90)));
 
   const hubs = [[139.7,35.7],[103.8,1.4],[72.9,19.1],[2.4,48.9],[151.2,-33.9],
     [55.3,25.2],[37,-1.3],[-122.4,37.8],[-74,40.7],[-46.6,-23.6]].map(([lon, lat]) => onGlobe(lon, lat));
+  function corridor(a, b, lift) {
+    return sample(64, t => hubs[a].clone().lerp(hubs[b], t).normalize().multiplyScalar(1 + lift * Math.sin(Math.PI * t)));
+  }
+
   const routes = [[0,1],[0,4],[1,2],[1,4],[2,5],[3,5],[5,6],[3,8],[7,8],[8,9],[7,0]].map(([a,b]) =>
-    sample(64, t => hubs[a].clone().lerp(hubs[b], t).normalize().multiplyScalar(1 + .13 * Math.sin(Math.PI * t))));
+    [.06, .12, .18].map(lift => corridor(a, b, lift)));
 
   function path(points, color) {
     ctx.beginPath();
@@ -93,28 +97,30 @@
   }
 
   const spokeAngle = lane => (lane * 45 - 17) * rad;
-  const spokeEnd = lane => 2.22 + (lane % 3) * .22;
-  function orientGlobe(q, time) {
-    return q.setFromAxisAngle(up, -91 * rad + time * .045).premultiply(pitch).premultiply(tilt);
+  // A gently moving observation angle keeps both endpoints of the featured flows visible.
+  function orientGlobe(time) {
+    rotation.setFromAxisAngle(up, (-98 + 9 * Math.sin(time * .055)) * rad).premultiply(pitch).premultiply(tilt);
+  }
+
+  function observationGrid() {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(65,133,218,.18)';
+    ctx.lineWidth = .65 / radius;
+    ctx.beginPath();
+    for (let i = -9; i <= 9; i++) {
+      ctx.moveTo(i * .20, .52);
+      ctx.lineTo(i * .54, 1.49);
+    }
+    for (const depth of [.52, .58, .66, .77, .93, 1.15, 1.49]) {
+      const extent = 1.8 + (depth - .52) * 3.15;
+      ctx.moveTo(-extent, depth);
+      ctx.lineTo(extent, depth);
+    }
+    ctx.stroke();
+    ctx.restore();
   }
 
   function perimeter(time) {
-    for (let i = 0; i < 8; i++) {
-      if (uplinks.includes(i)) continue;
-      ctx.save();
-      ctx.rotate(spokeAngle(i));
-      const end = spokeEnd(i);
-      ctx.beginPath();
-      ctx.moveTo(1.19, 0);
-      ctx.lineTo(1.43, 0);
-      ctx.lineTo(1.57, -.14);
-      ctx.lineTo(end, -.14);
-      ctx.strokeStyle = 'rgba(108,195,191,.20)';
-      ctx.stroke();
-      ctx.fillStyle = 'rgba(129,221,208,.48)';
-      ctx.fillRect(end, -.15, .023, .023);
-      ctx.restore();
-    }
     ring(0, 0, 1.19, 'rgba(108,209,196,.29)');
     for (let i = 0; i < 96; i++) {
       const a = turn * i / 96;
@@ -131,82 +137,82 @@
     spot(1.19 * Math.cos(sweep + .38), 1.19 * Math.sin(sweep + .38), .017, '#c9fff0');
   }
 
-  // A repeating illustrative wave. Shorter launch intervals create pressure without flashing.
+  // Synthetic traffic concentrates on the receiving site as the wave builds.
   const events = [
-    {at: 0, lane: 5}, {at: 2.8, lane: 0}, {at: 4.8, lane: 6},
-    {at: 6.2, lane: 2}, {at: 7.2, lane: 5, breach: true}, {at: 7.9, lane: 7},
-    {at: 8.5, lane: 0}, {at: 9, lane: 2}, {at: 9.5, lane: 6},
-    {at: 12.8, lane: 5}, {at: 15.6, lane: 7}
-  ];
-  const impactRotation = new Quaternion();
+    [0, 1, 0], [2.8, 4, 1], [4.8, 2, 1], [6.2, 0, 1],
+    [7.2, 4, 1, true], [7.9, 5, 1], [8.5, 0, 1], [9, 2, 1],
+    [9.5, 4, 1], [12.8, 2, 0], [15.6, 1, 4]
+  ].map(([at, source, target, breach = false]) => ({
+    at, target, breach, track: corridor(source, target, .21)
+  }));
+  const sensorRadius = .085;
+  const sensors = new Map([[0, 'TYO'], [1, 'SIN'], [2, 'BOM'], [4, 'SYD'], [5, 'DXB']]);
 
-  function incoming(lane, progress) {
-    const angle = spokeAngle(lane);
-    const x = spokeEnd(lane) + (1.19 - spokeEnd(lane)) * progress;
-    const y = -Math.max(0, Math.min(.14, x - 1.43));
-    return {x: x * Math.cos(angle) - y * Math.sin(angle), y: x * Math.sin(angle) + y * Math.cos(angle)};
+  function screen(point) {
+    const p = projected.copy(point).applyQuaternion(rotation);
+    return {x: p.x, y: -p.y};
   }
 
-  function trace(a, b, color) {
-    ctx.beginPath();
-    ctx.moveTo(a.x, a.y);
-    ctx.lineTo(b.x, b.y);
-    ctx.strokeStyle = color;
-    ctx.stroke();
-  }
-
-  function breachedNode(port, age, time) {
-    // Select at impact time so the endpoint stays attached to the same rotating hub.
-    orientGlobe(impactRotation, time - age);
-    let nearest, distance = Infinity;
-    for (const hub of hubs) {
-      const p = projected.copy(hub).applyQuaternion(impactRotation);
-      if (p.z < .25) continue;
-      const d = Math.hypot(p.x - port.x, -p.y - port.y);
-      if (d < distance) { nearest = hub; distance = d; }
-    }
-    if (!nearest) return;
-    const p = projected.copy(nearest).applyQuaternion(rotation);
-    const travel = Math.min(1, age / .9);
-    const x = port.x + (p.x - port.x) * travel;
-    const y = port.y + (-p.y - port.y) * travel;
-    ctx.globalAlpha = Math.min(1, (3 - age) / .9);
-    trace(port, {x, y}, 'rgba(255,71,85,.64)');
-    spot(x, y, .023, '#ff495b');
-    if (travel === 1) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(Math.PI / 4);
-      ctx.strokeStyle = '#ff6774';
-      ctx.strokeRect(-.045, -.045, .09, .09);
-      ctx.restore();
-    }
+  function trackPoint(track, position) {
+    const i = Math.floor(position);
+    const a = screen(track[i]), b = screen(track[Math.min(i + 1, track.length - 1)]);
+    return {x: a.x + (b.x - a.x) * (position - i), y: a.y + (b.y - a.y) * (position - i)};
   }
 
   function drawIncidents(time) {
-    const cycle = 18;
-    const approach = 1.8;
+    const cycle = 18, approach = 1.8;
     ctx.save();
     ctx.lineWidth = 1.5 / radius;
-    for (const event of events) {
-      const age = ((time + 1.3 - event.at) % cycle + cycle) % cycle;
+    for (const {at, target, breach, track} of events) {
+      const age = ((time + 1.3 - at) % cycle + cycle) % cycle;
       const afterImpact = age - approach;
-      if (afterImpact >= (event.breach ? 3 : 1)) continue;
+      if (afterImpact >= (breach ? 3 : 1)) continue;
+      const node = screen(hubs[target]);
+      // Find the first contact with the local receiver ring along this projected route.
+      let edge = track.length - 2;
+      while (edge > 0) {
+        const p = screen(track[edge]);
+        if (Math.hypot(p.x - node.x, p.y - node.y) >= sensorRadius) break;
+        edge--;
+      }
+      const outside = screen(track[edge]), inside = screen(track[edge + 1]);
+      const outerDistance = Math.hypot(outside.x - node.x, outside.y - node.y);
+      const innerDistance = Math.hypot(inside.x - node.x, inside.y - node.y);
+      const contact = edge + (outerDistance - sensorRadius) / (outerDistance - innerDistance);
+      const position = contact * Math.min(1, age / approach);
+      const head = trackPoint(track, position);
       ctx.globalAlpha = 1;
-      const progress = Math.min(1, age / approach);
-      const head = incoming(event.lane, progress);
       if (afterImpact < 0) {
-        const tail = incoming(event.lane, Math.max(0, progress - .13));
-        ctx.globalAlpha = Math.min(1, age / .24);
-        trace(tail, head, '#e6a35e');
-        spot(head.x, head.y, .019, '#ffd494');
-      } else if (event.breach) {
-        breachedNode(head, afterImpact, time);
+        ctx.globalAlpha = Math.min(1, age / .25);
+        const tail = trackPoint(track, Math.max(0, position - 5));
+        ctx.beginPath();
+        ctx.moveTo(tail.x, tail.y);
+        ctx.lineTo(head.x, head.y);
+        ctx.strokeStyle = '#e6a35e';
+        ctx.stroke();
+        spot(head.x, head.y, .018, '#ffd494');
+      } else if (breach) {
+        const t = Math.min(1, afterImpact / .55);
+        const x = head.x + (node.x - head.x) * t, y = head.y + (node.y - head.y) * t;
+        ctx.globalAlpha = Math.min(1, (3 - afterImpact) / .8);
+        ctx.beginPath();
+        ctx.moveTo(head.x, head.y);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = '#ff6774';
+        ctx.stroke();
+        spot(x, y, .023, '#ff495b');
+        if (t === 1) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(Math.PI / 4);
+          ctx.strokeRect(-.047, -.047, .094, .094);
+          ctx.restore();
+        }
       } else {
         ctx.globalAlpha = 1 - afterImpact;
-        const angle = spokeAngle(event.lane);
-        ring(0, 0, 1.19, '#a4ffda', angle - .105, angle + .105);
-        ring(head.x, head.y, .025 + .095 * afterImpact, '#91ebcd');
+        const bearing = Math.atan2(head.y - node.y, head.x - node.x);
+        ring(node.x, node.y, sensorRadius, '#a4ffda', bearing - .85, bearing + .85);
+        ring(head.x, head.y, .016 + .058 * afterImpact, '#91ebcd');
       }
     }
     ctx.restore();
@@ -226,17 +232,18 @@
     halo.addColorStop(1, 'rgba(16,89,110,0)');
     ctx.fillStyle = halo;
     ctx.fillRect(-1.65, -1.65, 3.3, 3.3);
+    observationGrid();
     perimeter(elapsed);
 
     const sphere = ctx.createRadialGradient(-.36, -.45, .06, .02, .1, 1.14);
-    sphere.addColorStop(0, '#163e4b');
-    sphere.addColorStop(.67, '#0e2c3a');
+    sphere.addColorStop(0, '#16374e');
+    sphere.addColorStop(.67, '#102b46');
     sphere.addColorStop(.94, '#0a1e30');
-    sphere.addColorStop(1, '#20505a');
+    sphere.addColorStop(1, '#1a435c');
     spot(0, 0, 1, sphere);
-    orientGlobe(rotation, elapsed);
-    for (const line of grid) path(line, 'rgba(104,191,192,.17)');
-    ctx.fillStyle = '#68cbb4';
+    orientGlobe(elapsed);
+    for (const line of grid) path(line, 'rgba(76,163,239,.26)');
+    ctx.fillStyle = '#78c8d1';
     for (const point of dots) {
       const p = projected.copy(point).applyQuaternion(rotation);
       if (p.z <= 0) continue;
@@ -246,18 +253,30 @@
     }
     ctx.globalAlpha = 1;
     ring(0, 0, 1, 'rgba(114,228,214,.52)');
-    routes.forEach((route, i) => {
-      path(route, 'rgba(151,246,220,.56)');
+    routes.forEach((bundle, i) => {
+      const baseline = bundle[0];
+      if (projected.copy(baseline[0]).applyQuaternion(rotation).z <= 0 ||
+          projected.copy(baseline[baseline.length - 1]).applyQuaternion(rotation).z <= 0) return;
+      for (const route of bundle) path(route, 'rgba(93,191,242,.44)');
+      const route = bundle[i % bundle.length];
       const index = Math.floor(((elapsed * .125 + i * .37) % 1) * (route.length - 1));
       const p = projected.copy(route[index]).applyQuaternion(rotation);
-      if (p.z > 0) spot(p.x, -p.y, .011, '#dafff0');
+      if (p.z > 0) spot(p.x, -p.y, .011, '#cfedff');
     });
-    for (const hub of hubs) {
+    hubs.forEach((hub, i) => {
       const p = projected.copy(hub).applyQuaternion(rotation);
-      if (p.z <= 0) continue;
-      ring(p.x, -p.y, .035, 'rgba(170,255,224,.68)');
-      spot(p.x, -p.y, .018, '#d2ffe9');
-    }
+      if (p.z <= 0) return;
+      const x = p.x, y = -p.y;
+      spot(x, y, .017, '#dcf8ff');
+      if (!sensors.has(i)) return;
+      ring(x, y, sensorRadius, '#65bcff');
+      ring(x, y, sensorRadius + .018, 'rgba(107,195,244,.55)', -.8, 1.3);
+      if (radius >= 95) {
+        ctx.font = (9 / radius) + 'px monospace';
+        ctx.fillStyle = '#b6e4ff';
+        ctx.fillText(sensors.get(i), x + sensorRadius + .025, y + .02);
+      }
+    });
     drawIncidents(elapsed);
   }
 
