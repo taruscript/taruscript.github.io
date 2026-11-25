@@ -18,40 +18,56 @@
 
   const pad = id => String(id).padStart(2, '0');
   const normalize = input => input.toLocaleLowerCase('ja').normalize('NFKC');
-  const keyFor = topic => normalize([topic.title, topic.short, topic.summary, topic.deliverable, ...topic.tags].join(' '));
+  const keyFor = topic => normalize([
+    topic.title, topic.short, topic.summary, topic.technology.name, topic.technology.description,
+    topic.prompt, topic.security.example, topic.security.discussion, topic.deliverable, ...topic.tags
+  ].join(' '));
 
-  function makeTile(topic) {
+  function makePoint(topic) {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'topic-tile';
+    button.className = 'topic-point';
     button.dataset.topic = pad(topic.id);
-    button.setAttribute('aria-label', `テーマ${pad(topic.id)}：${topic.title}。詳細を開く`);
-    const number = document.createElement('span'); number.className = 'tile-number'; number.textContent = pad(topic.id);
-    const title = document.createElement('span'); title.className = 'tile-label'; title.textContent = topic.short;
-    const arrow = document.createElement('span'); arrow.className = 'tile-arrow'; arrow.textContent = '↗'; arrow.setAttribute('aria-hidden', 'true');
-    button.append(number, title, arrow);
+    button.setAttribute('aria-label', `テーマ${pad(topic.id)}　${topic.title}　詳細を開く`);
+    button.textContent = pad(topic.id);
+    const title = document.createElement('span');
+    title.className = 'point-title';
+    title.textContent = topic.short;
+    button.append(title);
     button.addEventListener('click', () => { lastTrigger = button; openTopic(topic.id); });
     return button;
   }
 
+  const plots = quadrants.map(quad => {
+    const grid = document.getElementById(`topics-${quad}`);
+    const points = topics.filter(topic => topic.quadrant === quad).map(topic => {
+      const slot = document.createElement('li');
+      slot.style.left = `${topic.position.x}%`;
+      slot.style.top = `${topic.position.y}%`;
+      const button = makePoint(topic);
+      slot.append(button);
+      grid.append(slot);
+      return {slot, keywords: keyFor(topic)};
+    });
+    return {quad, points, counter: document.getElementById(`count-${quad}`)};
+  });
+
   function renderMatrix() {
     const query = normalize(searchInput.value.trim());
-    const results = topics.filter(topic =>
-      (currentFilter === 'all' || topic.quadrant.includes(currentFilter)) &&
-      (!query || keyFor(topic).includes(query))
-    );
-    for (const quad of quadrants) {
-      const grid = document.getElementById(`topics-${quad}`);
-      const subset = results.filter(topic => topic.quadrant === quad);
-      const frag = document.createDocumentFragment();
-      subset.forEach(topic => frag.append(makeTile(topic)));
-      if (subset.length === 0) {
-        const empty = document.createElement('div'); empty.className = 'empty-quad'; empty.textContent = '該当するテーマはありません'; frag.append(empty);
+    let total = 0;
+    for (const {quad, points, counter} of plots) {
+      const includeQuadrant = currentFilter === 'all' || quad.includes(currentFilter);
+      let count = 0;
+      for (const {slot, keywords} of points) {
+        const matches = includeQuadrant && keywords.includes(query);
+        slot.setAttribute('aria-hidden', String(!matches));
+        if (matches) count++;
       }
-      grid.replaceChildren(frag);
-      document.getElementById(`count-${quad}`).textContent = `${subset.length} / 8`;
+      counter.textContent = `${count} / ${points.length}`;
+      total += count;
     }
-    resultCounter.innerHTML = `<strong>${results.length}</strong> / 32 件`;
+    resultCounter.innerHTML = `<strong>${total}</strong> / ${topics.length} 件`;
+    document.getElementById('matrix-empty').hidden = total !== 0;
   }
 
   document.querySelectorAll('.filter-button').forEach(button => {
@@ -74,11 +90,14 @@
     document.getElementById('drawer-kind').textContent = labels[topic.quadrant];
     document.getElementById('drawer-title').textContent = topic.title;
     document.getElementById('drawer-summary').textContent = topic.summary;
+    document.getElementById('drawer-technology').textContent = topic.technology.name;
+    document.getElementById('drawer-technology-description').textContent = topic.technology.description;
+    document.getElementById('drawer-security').open = false;
+    document.getElementById('drawer-attack-example').textContent = topic.security.example;
+    document.getElementById('drawer-security-discussion').textContent = topic.security.discussion;
+    document.getElementById('drawer-hint').open = false;
+    document.getElementById('drawer-prompt').textContent = topic.prompt;
     document.getElementById('drawer-deliverable').textContent = topic.deliverable;
-    const ol = document.getElementById('drawer-questions');
-    ol.replaceChildren(...topic.questions.map(q => { const li = document.createElement('li'); li.textContent = q; return li; }));
-    const tags = document.getElementById('drawer-tags');
-    tags.replaceChildren(...topic.tags.map(tag => { const span = document.createElement('span'); span.className = 'tag'; span.textContent = tag; return span; }));
     document.getElementById('drawer-position').textContent = `${topic.id} / 32`;
     drawerScroll.scrollTop = 0;
     drawer.classList.add('is-open'); scrim.classList.add('is-open');
@@ -152,7 +171,7 @@
     if (!drawer.classList.contains('is-open')) return;
     if (event.key === 'Escape') { event.preventDefault(); closeTopic(); return; }
     if (event.key !== 'Tab') return;
-    const focusables = [...drawer.querySelectorAll('button:not([disabled]), a[href], input:not([disabled])')];
+    const focusables = [...drawer.querySelectorAll('button:not([disabled]), summary, a[href], input:not([disabled])')];
     if (!focusables.length) return;
     const first = focusables[0], last = focusables[focusables.length-1];
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }

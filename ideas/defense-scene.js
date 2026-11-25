@@ -142,10 +142,10 @@
   // MDDR 2026 p.32: share of customer threat impact, Jan–Jun 2026, in published order.
   // Normalize within the twelve reported destinations; coordinates are illustrative.
   const destinations = [
-    ['米国', 25.5, -98, 38], ['イスラエル', 7.6, 34.9, 32], ['ウクライナ', 4.8, 31, 49],
-    ['台湾', 3.9, 121, 23.6], ['英国', 3.8, -1.6, 52.5], ['UAE', 2.8, 54.4, 24.4],
+    ['アメリカ', 25.5, -98, 38], ['イスラエル', 7.6, 34.9, 32], ['ウクライナ', 4.8, 31, 49],
+    ['台湾', 3.9, 121, 23.6], ['イギリス', 3.8, -1.6, 52.5], ['アラブ首長国連邦', 2.8, 54.4, 24.4],
     ['インド', 2.5, 78, 22], ['日本', 2.5, 138, 36], ['カナダ', 1.8, -98, 54],
-    ['ドイツ', 1.7, 10, 51], ['豪州', 1.5, 134, -25], ['フィリピン', 1.5, 122, 13]
+    ['ドイツ', 1.7, 10, 51], ['オーストラリア', 1.5, 134, -25], ['フィリピン', 1.5, 122, 13]
   ].map(([name, share, lon, lat]) => ({ name, share, point: onGlobe(lon, lat) }));
   const totalShare = destinations.reduce((sum, site) => sum + site.share, 0);
   function destinationAt(fraction) {
@@ -428,8 +428,11 @@
       ring(x, y, sensorRadius + .018, 'rgba(107,195,244,.55)', -.8, 1.3);
       if (radius < 95 || z < .2) continue;
       ctx.font = (10 / radius) + 'px sans-serif';
-      const left = x + sensorRadius + .025;
-      const right = left + ctx.measureText(site.name).width;
+      const labelWidth = ctx.measureText(site.name).width;
+      const gap = sensorRadius + .025;
+      const fitsRight = centerX + (x + gap + labelWidth) * radius <= width - 2;
+      const left = fitsRight ? x + gap : x - gap - labelWidth;
+      const right = left + labelWidth;
       if (labels.some(box => left < box.right && right > box.left && Math.abs(y - box.y) * radius < 13)) continue;
       labels.push({left, right, y});
       ctx.fillStyle = '#cfefff';
